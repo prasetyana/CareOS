@@ -69,29 +69,35 @@ export interface OperatingHours {
 
 /**
  * Detects tenant from current domain
- * For local development, uses URL parameter or defaults to demo tenant
+ * Priority: subdomain → URL parameter → default
  */
 export async function detectTenantFromDomain(): Promise<TenantContext | null> {
     const hostname = window.location.hostname
 
-    // For local development: check URL parameter first
+    // Priority 1: Check for subdomain (e.g., demo.careos.cloud)
+    const subdomain = detectTenantFromSubdomain()
+
+    // Priority 2: Check URL parameter for local development
     const params = new URLSearchParams(window.location.search)
     const tenantParam = params.get('tenant')
 
+    // Determine which identifier to use
+    const tenantIdentifier = subdomain || tenantParam
+
     let domain = hostname
 
-    // If tenant parameter exists, use it as slug to lookup
-    if (tenantParam) {
-        console.log('🔍 Detecting tenant from URL parameter:', tenantParam)
+    // If we have a tenant identifier (subdomain or param), look it up
+    if (tenantIdentifier) {
+        console.log('🔍 Detecting tenant from:', subdomain ? `subdomain: ${subdomain}` : `URL parameter: ${tenantParam}`)
 
         try {
             // Query by slug instead of domain for development
-            console.log('🚀 Starting direct fetch for tenant:', tenantParam)
+            console.log('🚀 Starting direct fetch for tenant:', tenantIdentifier)
 
             const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
             const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
-            const response = await fetch(`${supabaseUrl}/rest/v1/tenants?slug=eq.${tenantParam}&select=id,slug,business_name,logo_url,primary_color,secondary_color,font_family,description,email,phone,website,operating_hours`, {
+            const response = await fetch(`${supabaseUrl}/rest/v1/tenants?slug=eq.${tenantIdentifier}&select=id,slug,business_name,logo_url,primary_color,secondary_color,font_family,description,email,phone,website,operating_hours`, {
                 headers: {
                     'apikey': supabaseAnonKey,
                     'Authorization': `Bearer ${supabaseAnonKey}`
@@ -128,13 +134,13 @@ export async function detectTenantFromDomain(): Promise<TenantContext | null> {
             } else {
                 console.warn('⚠️ Tenant not found in database, using mock tenant')
                 // Return mock tenant for development
-                return getMockTenant(tenantParam)
+                return getMockTenant(tenantIdentifier)
             }
         } catch (error) {
             console.error('❌ Error fetching tenant from database:', error)
             console.log('🔄 Falling back to mock tenant')
             // Return mock tenant on error
-            return getMockTenant(tenantParam)
+            return getMockTenant(tenantIdentifier)
         }
     }
 
@@ -242,16 +248,44 @@ function getMockTenant(slug: string): TenantContext {
 }
 
 /**
- * For development: detect tenant from subdomain
+ * Detect tenant from subdomain
+ * Handles: demo.careos.cloud, demo.staging.careos.cloud, restaurant1.careos.cloud
  */
 export function detectTenantFromSubdomain(): string | null {
     const hostname = window.location.hostname
     const parts = hostname.split('.')
 
-    // If subdomain exists (e.g., restaurant1.careos.id)
-    if (parts.length > 2) {
-        return parts[0] // Return 'restaurant1'
+    // Localhost - no subdomain
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        return null
     }
 
+    // For Vercel preview URLs (e.g., care-os-three.vercel.app)
+    if (hostname.includes('vercel.app')) {
+        return null
+    }
+
+    // For multi-level subdomains (e.g., demo.staging.careos.cloud)
+    // We want to extract 'demo' from demo.staging.careos.cloud
+    if (parts.length >= 4) {
+        // demo.staging.careos.cloud → ['demo', 'staging', 'careos', 'cloud']
+        // We want the first part: 'demo'
+        return parts[0]
+    }
+
+    // For single-level subdomains (e.g., demo.careos.cloud)
+    if (parts.length === 3) {
+        // demo.careos.cloud → ['demo', 'careos', 'cloud']
+        const subdomain = parts[0]
+
+        // Ignore 'www' and 'staging' as tenant identifiers
+        if (subdomain === 'www' || subdomain === 'staging') {
+            return null
+        }
+
+        return subdomain
+    }
+
+    // No subdomain (e.g., careos.cloud)
     return null
 }
