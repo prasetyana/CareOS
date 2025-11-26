@@ -11,7 +11,7 @@ import { PaymentMethod } from '../../data/types/customer';
 import GojekLogo from '../logos/GojekLogo';
 import GrabLogo from '../logos/GrabLogo';
 import DineOSLogo from '../logos/DineOSLogo';
-import DeliveryMap from './DeliveryMap';
+import DeliveryMapWrapper from './DeliveryMapWrapper';
 import { useTenantParam } from '../../hooks/useTenantParam';
 
 const stepVariants = {
@@ -591,7 +591,7 @@ const CartContent: React.FC<CartContentProps> = ({ onClose }) => {
                                             <div>
                                                 <label className="block text-sm font-medium text-text-muted dark:text-gray-400 mb-2">Lokasi Pengiriman</label>
                                                 <div className="relative w-full h-64 bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden border border-black/5 dark:border-white/10 mb-3">
-                                                    <DeliveryMap
+                                                    <DeliveryMapWrapper
                                                         onLocationSelect={(lat, lng, distance) => {
                                                             setDeliveryDistance(distance);
                                                             setIsCalculatingFee(false);
