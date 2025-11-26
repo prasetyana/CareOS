@@ -25,35 +25,35 @@ interface ChatAnalytics {
 }
 
 interface LiveChatContextType {
-  conversations: Conversation[];
-  activeConversation: Conversation | null;
-  setActiveConversation: (conversationId: number) => void;
-  sendMessage: (conversationId: number, content: { text?: string; attachment?: Attachment }, sender: Sender, type?: 'public' | 'internal') => void;
-  startNewConversation: (formData: { topic: string; message: string }) => Promise<void>;
-  customerConversations: Conversation[];
-  activeCustomerConversation: Conversation | null;
-  setActiveCustomerConversation: (conversationId: number | null) => void;
-  customerUnreadCount: number;
-  cannedResponses: CannedResponse[];
-  startTyping: (conversationId: number, userType: 'customer' | 'agent', previewText?: string) => void;
-  stopTyping: (conversationId: number, userType: 'customer' | 'agent') => void;
-  closeConversation: (conversationId: number) => void;
-  reopenConversation: (conversationId: number) => void;
-  rateConversation: (conversationId: number, rating: number, comment?: string) => void;
-  getAIAssistance: (action: AIAssistAction, conversation: Conversation, currentText?: string) => Promise<string | void>;
-  isAIAssisting: boolean;
-  attentionRequiredCount: number;
-  markAgentMessagesAsRead: (conversationId: number) => void;
-  agentStatus: Record<number, AgentStatus>;
-  setAgentStatus: (agentId: number, status: AgentStatus) => void;
-  addTagToConversation: (conversationId: number, tag: string) => void;
-  removeTagFromConversation: (conversationId: number, tag: string) => void;
-  assignConversation: (conversationId: number, agentId: number | null) => void;
-  snoozeConversation: (conversationId: number, snoozeUntil: string | null) => void;
-  activeFilter: ConversationFilter;
-  setActiveFilter: (filter: ConversationFilter) => void;
-  mergeConversations: (primaryConversationId: number, secondaryConversationId: number) => void;
-  analytics: ChatAnalytics;
+    conversations: Conversation[];
+    activeConversation: Conversation | null;
+    setActiveConversation: (conversationId: number) => void;
+    sendMessage: (conversationId: number, content: { text?: string; attachment?: Attachment }, sender: Sender, type?: 'public' | 'internal') => void;
+    startNewConversation: (formData: { topic: string; message: string }) => Promise<void>;
+    customerConversations: Conversation[];
+    activeCustomerConversation: Conversation | null;
+    setActiveCustomerConversation: (conversationId: number | null) => void;
+    customerUnreadCount: number;
+    cannedResponses: CannedResponse[];
+    startTyping: (conversationId: number, userType: 'customer' | 'agent', previewText?: string) => void;
+    stopTyping: (conversationId: number, userType: 'customer' | 'agent') => void;
+    closeConversation: (conversationId: number) => void;
+    reopenConversation: (conversationId: number) => void;
+    rateConversation: (conversationId: number, rating: number, comment?: string) => void;
+    getAIAssistance: (action: AIAssistAction, conversation: Conversation, currentText?: string) => Promise<string | void>;
+    isAIAssisting: boolean;
+    attentionRequiredCount: number;
+    markAgentMessagesAsRead: (conversationId: number) => void;
+    agentStatus: Record<number, AgentStatus>;
+    setAgentStatus: (agentId: number, status: AgentStatus) => void;
+    addTagToConversation: (conversationId: number, tag: string) => void;
+    removeTagFromConversation: (conversationId: number, tag: string) => void;
+    assignConversation: (conversationId: number, agentId: number | null) => void;
+    snoozeConversation: (conversationId: number, snoozeUntil: string | null) => void;
+    activeFilter: ConversationFilter;
+    setActiveFilter: (filter: ConversationFilter) => void;
+    mergeConversations: (primaryConversationId: number, secondaryConversationId: number) => void;
+    analytics: ChatAnalytics;
 }
 
 export const LiveChatContext = createContext<LiveChatContextType | undefined>(undefined);
@@ -68,11 +68,11 @@ const playNotificationSound = () => {
 };
 
 const usePrevious = <T,>(value: T): T | undefined => {
-  const ref = useRef<T>();
-  useEffect(() => {
-    ref.current = value;
-  });
-  return ref.current;
+    const ref = useRef<T>();
+    useEffect(() => {
+        ref.current = value;
+    });
+    return ref.current;
 };
 
 const isOutsideOperatingHours = (): boolean => {
@@ -88,7 +88,7 @@ export const LiveChatProvider: React.FC<{ children: ReactNode }> = ({ children }
     const [activeConversationId, setActiveConversationId] = useState<number | null>(null);
     const { user } = useAuth();
     const [isAIAssisting, setIsAIAssisting] = useState(false);
-    
+
     const [customerConversations, setCustomerConversations] = useState<Conversation[]>([]);
     const [activeCustomerConversationId, setActiveCustomerConversationId] = useState<number | null>(null);
     const [agentStatus, setAgentStatusState] = useState<Record<number, AgentStatus>>({
@@ -98,13 +98,14 @@ export const LiveChatProvider: React.FC<{ children: ReactNode }> = ({ children }
     const [activeFilter, setActiveFilter] = useState<ConversationFilter>('all');
 
 
-    // Init Gemini AI
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    // Init Gemini AI only if API key is available
+    const geminiApiKey = import.meta.env.VITE_GEMINI_API_KEY || import.meta.env.GEMINI_API_KEY;
+    const ai = geminiApiKey ? new GoogleGenAI({ apiKey: geminiApiKey }) : null;
     const systemInstruction = "You are a friendly and helpful customer support agent for a restaurant named DineOS. Your goal is to answer customer questions accurately and politely. Keep your answers concise and to the point. The restaurant's menu includes Italian classics like Bruschetta, Calamari, Spaghetti Carbonara, Pizza Margherita, and Tiramisu. If you don't know the answer to a question, or if the user asks to speak to a human, or seems very frustrated, first say you'll connect them with a human agent, and then on a new line output the special token [HANDOFF_TO_HUMAN].";
 
     const conversations = useMemo(() => {
         if (!user) return [];
-        
+
         let filtered = allConversations;
         const now = new Date();
 
@@ -126,12 +127,12 @@ export const LiveChatProvider: React.FC<{ children: ReactNode }> = ({ children }
                 filtered = allConversations.filter(c => c.status === 'open' && (!c.snoozedUntil || new Date(c.snoozedUntil) <= now));
                 break;
         }
-        return filtered.sort((a,b) => (new Date(b.messages[b.messages.length-1]?.timestamp).getTime() > new Date(a.messages[a.messages.length-1]?.timestamp).getTime()) ? 1 : -1);
+        return filtered.sort((a, b) => (new Date(b.messages[b.messages.length - 1]?.timestamp).getTime() > new Date(a.messages[a.messages.length - 1]?.timestamp).getTime()) ? 1 : -1);
     }, [allConversations, activeFilter, user]);
 
     const activeConversation = conversations.find(c => c.id === activeConversationId) || null;
     const activeCustomerConversation = customerConversations.find(c => c.id === activeCustomerConversationId) || null;
-    
+
     useEffect(() => {
         if (user && user.role === 'customer') {
             const loadCustomerConvos = async () => {
@@ -141,7 +142,7 @@ export const LiveChatProvider: React.FC<{ children: ReactNode }> = ({ children }
             loadCustomerConvos();
         }
     }, [user]);
-    
+
     // Effect for checking snoozes
     useEffect(() => {
         const interval = setInterval(() => {
@@ -179,7 +180,7 @@ export const LiveChatProvider: React.FC<{ children: ReactNode }> = ({ children }
             if (c.id === conversationId) {
                 const hasUnreadAgentMessages = c.messages.some(m => m.sender.type === 'agent' && !m.read);
                 if (!hasUnreadAgentMessages) return c;
-    
+
                 const updatedMessages = c.messages.map(m => {
                     if (m.sender.type === 'agent' && !m.read) {
                         return { ...m, read: true };
@@ -222,7 +223,7 @@ export const LiveChatProvider: React.FC<{ children: ReactNode }> = ({ children }
         }
         setActiveConversationId(conversationId);
     };
-    
+
     const setActiveCustomerConversation = (conversationId: number | null) => {
         setActiveCustomerConversationId(conversationId);
         if (conversationId) {
@@ -250,7 +251,7 @@ export const LiveChatProvider: React.FC<{ children: ReactNode }> = ({ children }
         const updateTyping = (list: Conversation[]) => list.map(c => {
             if (c.id === conversationId) {
                 const updatedTyping = { ...c.typing, [userType]: false };
-                 if (userType === 'customer') {
+                if (userType === 'customer') {
                     updatedTyping.customerPreview = '';
                 }
                 return { ...c, typing: updatedTyping };
@@ -260,7 +261,7 @@ export const LiveChatProvider: React.FC<{ children: ReactNode }> = ({ children }
         setAllConversations(updateTyping);
         setCustomerConversations(updateTyping);
     };
-    
+
     const handleAIResponse = async (conversationId: number, messagesForContext: Message[], isNewConversation: boolean = false) => {
         startTyping(conversationId, 'agent');
         const contents = messagesForContext
@@ -269,8 +270,11 @@ export const LiveChatProvider: React.FC<{ children: ReactNode }> = ({ children }
                 role: m.sender.type === 'customer' ? 'user' : 'model',
                 parts: [{ text: m.text! }]
             }));
-        
+
         try {
+            if (!ai) {
+                throw new Error('Gemini AI not initialized');
+            }
             const response = await ai.models.generateContent({
                 model: 'gemini-2.5-flash',
                 contents,
@@ -283,12 +287,12 @@ export const LiveChatProvider: React.FC<{ children: ReactNode }> = ({ children }
                 aiText = aiText.replace('[HANDOFF_TO_HUMAN]', '').trim();
                 requiresHuman = true;
             }
-            
+
             const aiReply = createMessage({ text: aiText }, { id: 99, name: 'AI Assistant', type: 'agent' }, 'public');
             const messagesToAdd = [aiReply];
-            
-            if(requiresHuman) {
-                 messagesToAdd.push(createMessage({ text: "Percakapan dialihkan ke agen." }, { id: 0, name: 'System', type: 'system' }, 'public'));
+
+            if (requiresHuman) {
+                messagesToAdd.push(createMessage({ text: "Percakapan dialihkan ke agen." }, { id: 0, name: 'System', type: 'system' }, 'public'));
             }
 
             const updateConvos = (prev: Conversation[]) => prev.map(c => {
@@ -328,7 +332,7 @@ export const LiveChatProvider: React.FC<{ children: ReactNode }> = ({ children }
         if (!content.text && !content.attachment) return;
 
         const newMessage = createMessage(content, sender, type);
-        
+
         if (sender.type === 'customer' && (conversationId !== activeConversationId || !document.hasFocus())) {
             playNotificationSound();
         }
@@ -342,7 +346,7 @@ export const LiveChatProvider: React.FC<{ children: ReactNode }> = ({ children }
                 }
                 return true;
             });
-            
+
             if (targetConvo) {
                 const updatedConvo = { ...targetConvo, messages: [...targetConvo.messages, newMessage], snoozedUntil: undefined };
                 if (sender.type === 'customer') {
@@ -353,9 +357,9 @@ export const LiveChatProvider: React.FC<{ children: ReactNode }> = ({ children }
                 if (sender.type === 'customer' && type === 'public' && !targetConvo.requiresHuman && newMessage.text) {
                     handleAIResponse(conversationId, updatedConvo.messages);
                 }
-                 if(sender.type === 'agent' && type === 'public') {
+                if (sender.type === 'agent' && type === 'public') {
                     updatedConvo.requiresHuman = false; // Agent has replied.
-                    
+
                     // Calculate first response time
                     if (!updatedConvo.firstResponseTime) {
                         const firstCustomerMessage = updatedConvo.messages.find(m => m.sender.type === 'customer');
@@ -374,21 +378,21 @@ export const LiveChatProvider: React.FC<{ children: ReactNode }> = ({ children }
         setCustomerConversations(updateAndReorder);
 
     }, [user, activeConversationId]);
-    
+
     const startNewConversation = useCallback(async (formData: { topic: string; message: string }): Promise<void> => {
         if (!user) return;
-        
+
         const newConversationStub = await createNewConversation(user.id, user.name, formData.message);
-        
+
         if (newConversationStub) {
             const formattedInitialMessage = `Topik: ${formData.topic}\n\n${formData.message}`;
             const initialMsg = createMessage({ text: formattedInitialMessage }, { id: user.id, name: user.name, type: 'customer' }, 'public');
-            
+
             let messages = [initialMsg];
             let requiresHuman = false;
-    
+
             const outsideHours = isOutsideOperatingHours();
-    
+
             if (outsideHours) {
                 const autoReply = createMessage(
                     { text: "Terima kasih telah menghubungi kami! Saat ini kami sedang di luar jam operasional (09:00 - 21:00). Kami akan segera merespons pesan Anda saat kami kembali online." },
@@ -398,24 +402,24 @@ export const LiveChatProvider: React.FC<{ children: ReactNode }> = ({ children }
                 messages.push(autoReply);
                 requiresHuman = true; // Flag for agents to see when they come back
             }
-    
-            const newConversationWithMsg: Conversation = { 
-                ...newConversationStub, 
-                messages, 
+
+            const newConversationWithMsg: Conversation = {
+                ...newConversationStub,
+                messages,
                 requiresHuman,
                 metadata: {
                     currentPage: window.location.hash.replace('#', ''),
                     device: 'Desktop', // Simplified for example
                 }
             };
-    
+
             const updateAndPrepend = (prev: Conversation[]) => [newConversationWithMsg, ...prev];
-            
+
             setAllConversations(updateAndPrepend);
             setCustomerConversations(updateAndPrepend);
-            
+
             setActiveCustomerConversationId(newConversationWithMsg.id);
-    
+
             // Only trigger AI if within operating hours
             if (!outsideHours) {
                 handleAIResponse(newConversationStub.id, newConversationWithMsg.messages, true);
@@ -427,7 +431,7 @@ export const LiveChatProvider: React.FC<{ children: ReactNode }> = ({ children }
         const agent = agentId ? mockUsers.find(u => u.id === agentId) : null;
         const messageText = agent ? `Percakapan ditugaskan ke ${agent.name}.` : 'Tugas percakapan dihapus.';
         const systemMessage = createMessage({ text: messageText }, { id: 0, name: 'System', type: 'system' }, 'public');
-        
+
         const updateAssignee = (list: Conversation[]) => list.map(c => {
             if (c.id === conversationId) {
                 return { ...c, assigneeId: agentId || undefined, messages: [...c.messages, systemMessage] };
@@ -447,10 +451,9 @@ export const LiveChatProvider: React.FC<{ children: ReactNode }> = ({ children }
 
         allConversations.forEach(currentConvo => {
             const prevConvo = (prevConversations as Conversation[]).find(p => p.id === currentConvo.id);
-            if (prevConvo && 
-                currentConvo.assigneeId === user.id && 
-                prevConvo.assigneeId !== user.id)
-            {
+            if (prevConvo &&
+                currentConvo.assigneeId === user.id &&
+                prevConvo.assigneeId !== user.id) {
                 playNotificationSound();
                 const notification = new Notification('Chat Baru Ditugaskan', {
                     body: `Anda mendapat chat baru dari ${currentConvo.customerName}.`,
@@ -470,18 +473,18 @@ export const LiveChatProvider: React.FC<{ children: ReactNode }> = ({ children }
         const unassignedChat = conversations.find(c => c.status === 'open' && c.requiresHuman && !c.assigneeId);
 
         if (unassignedChat) {
-            const onlineAgents = mockUsers.filter(u => 
-                (u.role === 'cs' || u.role === 'admin') && 
+            const onlineAgents = mockUsers.filter(u =>
+                (u.role === 'cs' || u.role === 'admin') &&
                 (agentStatus[u.id] || 'offline') === 'online'
             );
-            
+
             if (onlineAgents.length > 0) {
                 const agentToAssign = onlineAgents[0]; // Simple assignment
-                
+
                 const assignmentTimeout = setTimeout(() => {
                     const latestVersionOfChat = allConversations.find(c => c.id === unassignedChat.id);
                     if (latestVersionOfChat && !latestVersionOfChat.assigneeId) {
-                         assignConversation(unassignedChat.id, agentToAssign.id);
+                        assignConversation(unassignedChat.id, agentToAssign.id);
                     }
                 }, 1000);
                 return () => clearTimeout(assignmentTimeout);
@@ -495,18 +498,18 @@ export const LiveChatProvider: React.FC<{ children: ReactNode }> = ({ children }
             const timer = setTimeout(() => {
                 const doni = mockUsers.find(u => u.id === 5);
                 if (doni && !allConversations.some(c => c.customerId === doni.id)) {
-                    
+
                     const simulateNewConversation = async () => {
                         const newConversationStub = await createNewConversation(doni.id, doni.name, "");
-                        
+
                         if (newConversationStub) {
                             const initialMsgText = "Halo, apakah Bistecca alla Fiorentina ready untuk dine-in malam ini?";
                             const initialMsg = createMessage({ text: initialMsgText }, { id: doni.id, name: doni.name, type: 'customer' }, 'public');
-                            
+
                             const updateConvos = (prev: Conversation[]) => {
                                 const convoExists = prev.some(c => c.id === newConversationStub.id);
                                 if (convoExists) return prev; // Avoid duplicates
-                                
+
                                 const newConvo = { ...newConversationStub, messages: [initialMsg] };
                                 Promise.resolve().then(() => handleAIResponse(newConversationStub.id, [initialMsg]));
                                 return [newConvo, ...prev];
@@ -525,7 +528,7 @@ export const LiveChatProvider: React.FC<{ children: ReactNode }> = ({ children }
     const closeConversation = useCallback((conversationId: number) => {
         const agentName = user?.name || 'Agent';
         const systemMessage = createMessage({ text: `Percakapan ditutup oleh ${agentName}.` }, { id: 0, name: 'System', type: 'system' }, 'public');
-        
+
         const updateStatus = (prev: Conversation[]) => prev.map(c => {
             if (c.id === conversationId) {
                 const firstMessageTime = new Date(c.messages[0]?.timestamp).getTime();
@@ -565,11 +568,11 @@ export const LiveChatProvider: React.FC<{ children: ReactNode }> = ({ children }
     const rateConversation = useCallback((conversationId: number, rating: number, comment?: string) => {
         const csat: CSAT = { rating, comment };
         const systemMessage = createMessage({ text: `Pelanggan memberikan rating ${csat.rating}/5 bintang.` }, { id: 0, name: 'System', type: 'system' }, 'public');
-        
+
         const updateRating = (prev: Conversation[]) => prev.map(c =>
-            c.id === conversationId 
-            ? { ...c, csat, messages: [...c.messages, systemMessage] } 
-            : c
+            c.id === conversationId
+                ? { ...c, csat, messages: [...c.messages, systemMessage] }
+                : c
         );
         setAllConversations(updateRating);
         setCustomerConversations(updateRating);
@@ -601,6 +604,9 @@ export const LiveChatProvider: React.FC<{ children: ReactNode }> = ({ children }
         }
 
         try {
+            if (!ai) {
+                throw new Error('Gemini AI not initialized');
+            }
             const response = await ai.models.generateContent({
                 model: 'gemini-2.5-flash',
                 contents: [{ role: 'user', parts: [{ text: prompt }] }],
@@ -629,17 +635,17 @@ export const LiveChatProvider: React.FC<{ children: ReactNode }> = ({ children }
             setIsAIAssisting(false);
         }
     }, [user]);
-    
+
     const attentionRequiredCount = useMemo(() =>
         allConversations.filter(c => c.requiresHuman && c.status === 'open').length,
-    [allConversations]);
-    
+        [allConversations]);
+
     const customerUnreadCount = useMemo(() =>
         customerConversations.reduce((count, convo) => {
             const unreadInConvo = convo.messages.filter(m => m.sender.type === 'agent' && !m.read && m.type === 'public').length;
             return count + unreadInConvo;
         }, 0),
-    [customerConversations]);
+        [customerConversations]);
 
     const setAgentStatus = (agentId: number, status: AgentStatus) => {
         setAgentStatusState(prev => ({ ...prev, [agentId]: status }));
@@ -671,13 +677,13 @@ export const LiveChatProvider: React.FC<{ children: ReactNode }> = ({ children }
         setAllConversations(updateTags);
         setCustomerConversations(updateTags);
     };
-    
+
     const snoozeConversation = (conversationId: number, snoozeUntil: string | null) => {
         const systemMessage = createMessage(
             { text: snoozeUntil ? `Percakapan ditunda oleh ${user?.name}.` : `Percakapan diaktifkan kembali.` },
             { id: 0, name: 'System', type: 'system' }, 'public'
         );
-        
+
         const updateSnooze = (list: Conversation[]) => list.map(c => {
             if (c.id === conversationId) {
                 return { ...c, snoozedUntil: snoozeUntil || undefined, messages: [...c.messages, systemMessage] };
@@ -696,19 +702,19 @@ export const LiveChatProvider: React.FC<{ children: ReactNode }> = ({ children }
             const secondaryConvo = prev.find(c => c.id === secondaryId);
 
             if (!primaryConvo || !secondaryConvo) return prev;
-    
+
             const combinedMessages = [...primaryConvo.messages, ...secondaryConvo.messages];
             combinedMessages.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
-    
+
             const systemMessage = createMessage(
                 { text: `Percakapan #${secondaryConvo.id} digabung ke percakapan ini.` },
                 { id: 0, name: 'System', type: 'system' },
                 'public'
             );
             combinedMessages.push(systemMessage);
-    
+
             const updatedPrimaryConvo = { ...primaryConvo, messages: combinedMessages };
-    
+
             const remainingConversations = prev.filter(c => c.id !== secondaryId);
             return remainingConversations.map(c => c.id === primaryId ? updatedPrimaryConvo : c);
         });

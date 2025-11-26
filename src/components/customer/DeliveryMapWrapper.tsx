@@ -6,6 +6,9 @@ interface DeliveryMapWrapperProps {
     restaurantLocation?: { lat: number; lng: number };
 }
 
+// Lazy load DeliveryMap - only loads when actually rendered
+const DeliveryMap = React.lazy(() => import('./DeliveryMap'));
+
 const DeliveryMapWrapper: React.FC<DeliveryMapWrapperProps> = (props) => {
     // Check if Google Maps API key is available
     const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
@@ -37,9 +40,7 @@ const DeliveryMapWrapper: React.FC<DeliveryMapWrapperProps> = (props) => {
         );
     }
 
-    // Lazy load the actual DeliveryMap component only when API key is available
-    const DeliveryMap = React.lazy(() => import('./DeliveryMap'));
-
+    // Only load DeliveryMap if API key exists
     return (
         <React.Suspense fallback={
             <div className="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-xl">
