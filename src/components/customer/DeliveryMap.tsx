@@ -30,10 +30,14 @@ const DeliveryMap: React.FC<DeliveryMapProps> = ({
 }) => {
     const [selectedLocation, setSelectedLocation] = useState<{ lat: number; lng: number } | null>(null);
 
-    // Replace 'YOUR_GOOGLE_MAPS_API_KEY' with your actual API key
+    // Check if Google Maps API key is available
+    const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+    const hasApiKey = apiKey && apiKey !== 'YOUR_GOOGLE_MAPS_API_KEY';
+
+    // Only load Google Maps if API key is available
     const { isLoaded, loadError } = useJsApiLoader({
         id: 'google-map-script',
-        googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || 'YOUR_GOOGLE_MAPS_API_KEY',
+        googleMapsApiKey: apiKey || '',
     });
 
     const calculateDistance = useCallback((lat1: number, lon1: number, lat2: number, lon2: number): number => {
@@ -72,6 +76,33 @@ const DeliveryMap: React.FC<DeliveryMapProps> = ({
         },
         [calculateDistance, onLocationSelect, restaurantLocation]
     );
+
+    // Show error message if API key is missing
+    if (!hasApiKey) {
+        return (
+            <div className="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-xl p-6">
+                <div className="text-center max-w-md">
+                    <MapPin className="w-12 h-12 text-amber-500 mx-auto mb-3" />
+                    <h3 className="font-semibold text-text-primary dark:text-gray-200 mb-2">
+                        Google Maps API Key Diperlukan
+                    </h3>
+                    <p className="text-sm text-text-muted dark:text-gray-400 mb-4">
+                        Untuk menggunakan peta interaktif, silakan tambahkan Google Maps API key ke file <code className="px-1.5 py-0.5 bg-black/10 dark:bg-white/10 rounded text-xs">.env</code>
+                    </p>
+                    <div className="text-left bg-white/60 dark:bg-black/30 rounded-lg p-3 text-xs space-y-1">
+                        <p className="font-medium text-text-primary dark:text-gray-200">Langkah-langkah:</p>
+                        <ol className="list-decimal list-inside space-y-1 text-text-muted dark:text-gray-400">
+                            <li>Buka <a href="https://console.cloud.google.com/" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">Google Cloud Console</a></li>
+                            <li>Aktifkan "Maps JavaScript API"</li>
+                            <li>Buat API Key di Credentials</li>
+                            <li>Tambahkan ke file .env:<br /><code className="text-[10px] bg-black/10 dark:bg-white/10 px-1 py-0.5 rounded">VITE_GOOGLE_MAPS_API_KEY=your_key</code></li>
+                            <li>Restart server: <code className="bg-black/10 dark:bg-white/10 px-1 py-0.5 rounded">npm run dev</code></li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     if (loadError) {
         return (
