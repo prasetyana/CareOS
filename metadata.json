@@ -1,0 +1,7 @@
+{
+  "name": "DineOS v0.1.4",
+  "description": "A modern and elegant restaurant website template built with React, TypeScript, and Tailwind CSS, featuring a dynamic menu, contact page, and a protected admin area.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
