@@ -13,6 +13,7 @@ import {
     UtensilsCrossed,
     Play
 } from 'lucide-react'
+import { getDemoUrl } from '../../lib/urlHelpers'
 
 const PlatformLandingPage: React.FC = () => {
     const navigate = useNavigate()
@@ -144,7 +145,7 @@ const PlatformLandingPage: React.FC = () => {
                         </div>
                         <div className="flex items-center gap-4">
                             <button
-                                onClick={() => window.location.href = '/login?tenant=demo'}
+                                onClick={() => window.location.href = getDemoUrl()}
                                 className="text-[13px] font-medium text-[#1D1D1F]/80 hover:text-[#1D1D1F] transition-colors"
                             >
                                 Lihat Demo
@@ -190,7 +191,7 @@ const PlatformLandingPage: React.FC = () => {
                             <ArrowRight className="w-4 h-4" />
                         </button>
                         <button
-                            onClick={() => window.location.href = '/login?tenant=demo'}
+                            onClick={() => window.location.href = getDemoUrl()}
                             className="px-6 py-3 bg-white text-[#1D1D1F] rounded-full font-medium hover:bg-[#F5F5F7] transition-all border border-gray-200 active:scale-95 transform duration-200 flex items-center gap-2 text-[15px]"
                         >
                             <Play className="w-4 h-4 fill-[#1D1D1F]" />
