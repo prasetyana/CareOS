@@ -102,21 +102,10 @@ const RestaurantRegisterPage: React.FC = () => {
         setLoading(true)
 
         try {
-            // Generate username from owner name
+            // Generate username from owner name + timestamp for uniqueness
             const firstName = formData.ownerName.split(' ')[0].toLowerCase().replace(/[^a-z0-9]/g, '');
-            let username = firstName;
-
-            // Import dynamically to avoid issues if mockDB isn't fully compatible with this file's environment
-            // In a real app, this would be a server-side check or a separate API call
-            const { checkUsernameAvailability } = await import('../../data/mockDB');
-
-            let isAvailable = await checkUsernameAvailability(username);
-            let counter = 1;
-            while (!isAvailable) {
-                username = `${firstName}${counter}`;
-                isAvailable = await checkUsernameAvailability(username);
-                counter++;
-            }
+            const timestamp = Date.now().toString().slice(-4); // Last 4 digits of timestamp
+            const username = `${firstName}${timestamp}`;
 
             const result = await registerRestaurantOwner({
                 ownerName: formData.ownerName,
