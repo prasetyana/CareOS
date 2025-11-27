@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { completeOnboarding } from '../../services/tenantService'
 import { supabase } from '../../lib/supabase'
+import { getTenantUrl } from '../../lib/urlHelpers'
 import { Check, ChevronRight, ArrowLeft, Store, Palette, Rocket } from 'lucide-react'
 
 interface OnboardingStep {
@@ -133,8 +134,27 @@ const OnboardingWizardPage: React.FC = () => {
             })
 
             if (result.success) {
-                // Redirect to admin dashboard with tenant parameter before hash
-                window.location.href = `/?tenant=${tenantSlug}#/admin`
+                // Redirect to admin dashboard using subdomain if available
+                const tenantUrl = getTenantUrl(tenantSlug)
+
+                // Try to provision domain via Vercel API (fire and forget)
+                try {
+                    const urlObj = new URL(tenantUrl)
+                    const domain = urlObj.hostname
+
+                    // Only call API if not localhost
+                    if (!domain.includes('localhost') && !domain.includes('127.0.0.1')) {
+                        await fetch('/api/add-domain', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ domain })
+                        })
+                    }
+                } catch (e) {
+                    console.error('Failed to provision domain:', e)
+                }
+
+                window.location.href = `${tenantUrl}/admin/dasbor`
             } else {
                 setError(result.error || 'Gagal menyelesaikan onboarding')
             }
