@@ -102,6 +102,7 @@ import AdminStaffPage from './pages/admin-staff/AdminStaffPage';
 import EmailSettings from './pages/admin-pengaturan/EmailSettings';
 import DomainSettings from './pages/admin-pengaturan/DomainSettings';
 import DynamicFavicon from './components/DynamicFavicon';
+import RootPage from './pages/RootPage';
 
 const App: React.FC = () => {
   return (
@@ -119,7 +120,7 @@ const App: React.FC = () => {
                           <LiveChatProvider>
                             <Routes>
                               {/* Platform routes (NO tenant context needed) */}
-                              <Route path="/" element={<PlatformLandingPage />} />
+                              <Route path="/" element={<RootPage />} />
                               <Route path="/register" element={<RestaurantRegisterPage />} />
                               <Route path="/onboarding" element={<OnboardingWizardPage />} />
 
