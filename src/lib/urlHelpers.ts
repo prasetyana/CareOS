@@ -23,15 +23,16 @@ function getBaseDomain(): string {
         return parts.slice(1).join('.');
     }
 
-    // For single-level subdomains (e.g., demo.careos.cloud)
+    // For single-level subdomains (e.g., demo.careos.cloud, staging.careos.cloud)
     // Extract base domain: careos.cloud
     if (parts.length === 3) {
         const subdomain = parts[0];
-        // If current subdomain is www or staging, keep it in base domain
+        // Keep 'www' and 'staging' as part of base domain
+        // This allows staging.careos.cloud → demo.staging.careos.cloud
         if (subdomain === 'www' || subdomain === 'staging') {
-            return hostname;
+            return hostname; // Return staging.careos.cloud
         }
-        return parts.slice(1).join('.');
+        return parts.slice(1).join('.'); // Return careos.cloud
     }
 
     // Already at base domain (e.g., careos.cloud)
