@@ -89,7 +89,7 @@ export async function registerRestaurantOwner(data: RestaurantRegistrationData) 
                 id: authData.user.id,
                 full_name: data.ownerName,
                 phone: data.ownerPhone,
-                role: 'tenant_admin',
+                role: 'admin', // Changed from 'tenant_admin' to match DB constraint
                 tenant_id: tenantData.id,
                 username: data.username // Add username here
             })
