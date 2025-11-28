@@ -12,39 +12,39 @@ import { ThemeProvider } from '@core/contexts/ThemeContext';
 import AdminSettingsPage from '@modules/admin/pages/AdminSettingsPage';
 import { HomepageProvider } from '@core/contexts/HomepageContext';
 import AdminMenuLayout from '@modules/admin/pages/admin/AdminMenuLayout';
-import TambahMenuBaru from '@modules/admin/pages/admin-menu/TambahMenuBaru';
-import EditMenuBaru from '@modules/admin/pages/admin-menu/EditMenuBaru';
-import KelolaMenu from '@modules/admin/pages/admin-menu/KelolaMenu';
-import KategoriMenu from '@modules/admin/pages/admin-menu/KategoriMenu';
-import AdminPesananLayout from '@modules/admin/pages/admin/AdminPesananLayout';
-import SemuaPesanan from '@modules/admin/pages/admin-pesanan/SemuaPesanan';
-import PesananAktif from '@modules/admin/pages/admin-pesanan/PesananAktif';
-import RiwayatPesanan from '@modules/admin/pages/admin-pesanan/RiwayatPesanan';
-import AdminReservasiLayout from '@modules/admin/pages/admin/AdminReservasiLayout';
-import JadwalReservasi from '@modules/admin/pages/admin-reservasi/JadwalReservasi';
-import TambahReservasiManual from '@modules/admin/pages/admin-reservasi/TambahReservasiManual';
-import AdminPelangganLayout from '@modules/admin/pages/admin/AdminPelangganLayout';
-import DaftarPelanggan from '@modules/admin/pages/admin-pelanggan/DaftarPelanggan';
-import UlasanFeedback from '@modules/admin/pages/admin-pelanggan/UlasanFeedback';
-import AdminAnalitikLayout from '@modules/admin/pages/admin/AdminAnalitikLayout';
-import StatistikPenjualan from '@modules/admin/pages/admin-analitik/StatistikPenjualan';
-import TrafficWebsite from '@modules/admin/pages/admin-analitik/TrafficWebsite';
-import MenuTerlaris from '@modules/admin/pages/admin-analitik/MenuTerlaris';
-import ProfilRestoran from '@modules/admin/pages/admin-pengaturan/ProfilRestoran';
-import AkunPemilik from '@modules/admin/pages/admin-pengaturan/AkunPemilik';
-import PengaturanUmum from '@modules/admin/pages/admin-pengaturan/PengaturanUmum';
-import TagihanLangganan from '@modules/admin/pages/admin-pengaturan/TagihanLangganan';
-import AdminTampilanLayout from '@modules/admin/pages/admin/AdminTampilanLayout';
-import KustomisasiHomepage from '@modules/admin/pages/admin-tampilan/KustomisasiHomepage';
-import EditSectionPage from '@modules/admin/pages/admin-tampilan/EditSectionPage';
-import TampilanTemaWarna from '@modules/admin/pages/admin-tampilan/TampilanTemaWarna';
-import AdminPromosiLayout from '@modules/admin/pages/admin/AdminPromosiLayout';
-import BannerPromo from '@modules/admin/pages/admin-promosi/BannerPromo';
-import KodeDiskon from '@modules/admin/pages/admin-promosi/KodeDiskon';
-import EventCampaign from '@modules/admin/pages/admin-promosi/EventCampaign';
-import Loyalti from '@modules/admin/pages/admin-promosi/Loyalti';
-import EditHeaderPage from '@modules/admin/pages/admin-tampilan/EditHeaderPage';
-import EditFooterPage from '@modules/admin/pages/admin-tampilan/EditFooterPage';
+import AddNewMenu from '@modules/admin/pages/admin-menu/AddNewMenu';
+import EditMenu from '@modules/admin/pages/admin-menu/EditMenu';
+import ManageMenu from '@modules/admin/pages/admin-menu/ManageMenu';
+import MenuCategories from '@modules/admin/pages/admin-menu/MenuCategories';
+import AdminOrdersLayout from '@modules/admin/pages/admin/AdminOrdersLayout';
+import AllOrders from '@modules/admin/pages/admin-orders/AllOrders';
+import ActiveOrders from '@modules/admin/pages/admin-orders/ActiveOrders';
+import OrderHistory from '@modules/admin/pages/admin-orders/OrderHistory';
+import AdminReservationsLayout from '@modules/admin/pages/admin/AdminReservationsLayout';
+import ReservationSchedule from '@modules/admin/pages/admin-reservations/ReservationSchedule';
+import AddManualReservation from '@modules/admin/pages/admin-reservations/AddManualReservation';
+import AdminCustomersLayout from '@modules/admin/pages/admin/AdminCustomersLayout';
+import CustomerList from '@modules/admin/pages/admin-customers/CustomerList';
+import ReviewsFeedback from '@modules/admin/pages/admin-customers/ReviewsFeedback';
+import AdminAnalyticsLayout from '@modules/admin/pages/admin/AdminAnalyticsLayout';
+import SalesStatistics from '@modules/admin/pages/admin-analytics/SalesStatistics';
+import WebsiteTraffic from '@modules/admin/pages/admin-analytics/WebsiteTraffic';
+import BestSellingMenu from '@modules/admin/pages/admin-analytics/BestSellingMenu';
+import RestaurantProfile from '@modules/admin/pages/admin-settings/RestaurantProfile';
+import OwnerAccount from '@modules/admin/pages/admin-settings/OwnerAccount';
+import GeneralSettings from '@modules/admin/pages/admin-settings/GeneralSettings';
+import BillingSubscription from '@modules/admin/pages/admin-settings/BillingSubscription';
+import AdminAppearanceLayout from '@modules/admin/pages/admin/AdminAppearanceLayout';
+import HomepageCustomization from '@modules/admin/pages/admin-appearance/HomepageCustomization';
+import EditSectionPage from '@modules/admin/pages/admin-appearance/EditSectionPage';
+import ThemeAndColors from '@modules/admin/pages/admin-appearance/ThemeAndColors';
+import AdminPromotionsLayout from '@modules/admin/pages/admin/AdminPromotionsLayout';
+import PromoBanner from '@modules/admin/pages/admin-promotions/PromoBanner';
+import DiscountCodes from '@modules/admin/pages/admin-promotions/DiscountCodes';
+import EventCampaign from '@modules/admin/pages/admin-promotions/EventCampaign';
+import Loyalty from '@modules/admin/pages/admin-promotions/Loyalty';
+import EditHeaderPage from '@modules/admin/pages/admin-appearance/EditHeaderPage';
+import EditFooterPage from '@modules/admin/pages/admin-appearance/EditFooterPage';
 import { CartProvider } from '@core/contexts/CartContext';
 import { CustomerLayoutProvider } from '@core/contexts/CustomerLayoutContext';
 import { NotificationProvider } from '@core/contexts/NotificationContext';
@@ -53,24 +53,25 @@ import ProtectedCsRoute from './router/ProtectedCsRoute';
 import CustomerServiceLayout from '@layouts/CustomerServiceLayout';
 import CustomerServiceDashboardPage from '@modules/cs/pages/CustomerServiceDashboardPage';
 import LiveChatPage from '@modules/cs/pages/LiveChatPage';
-import PesanMasukPage from '@modules/cs/pages/PesanMasukPage';
+import InboxPage from '@modules/cs/pages/InboxPage';
 import FaqManagementPage from '@modules/cs/pages/FaqManagementPage';
 import FaqEditorPage from '@modules/cs/pages/FaqEditorPage';
-import AdminLiveChatPage from '@modules/admin/pages/admin-pelanggan/AdminLiveChatPage';
+import AdminLiveChatPage from '@modules/admin/pages/admin-customers/AdminLiveChatPage';
 import { LiveChatProvider } from '@core/contexts/LiveChatContext';
-import StatistikChatPage from '@modules/admin/pages/admin-pelanggan/StatistikChatPage';
+import StatistikChatPage from '@modules/admin/pages/admin-customers/StatistikChatPage';
 import { LocationProvider } from '@core/contexts/LocationContext';
 import { FavoritesProvider } from '@core/contexts/FavoritesContext';
 import { TenantProvider, TenantConfig } from '@core/tenant';
 import RestaurantRegisterPage from '@modules/platform/pages/RestaurantRegisterPage';
 import OnboardingWizardPage from '@modules/platform/pages/OnboardingWizardPage';
 import AdminStaffPage from '@modules/admin/pages/admin-staff/AdminStaffPage';
-import EmailSettings from '@modules/admin/pages/admin-pengaturan/EmailSettings';
-import DomainSettings from '@modules/admin/pages/admin-pengaturan/DomainSettings';
+import EmailSettings from '@modules/admin/pages/admin-settings/EmailSettings';
+import DomainSettings from '@modules/admin/pages/admin-settings/DomainSettings';
 import DynamicFavicon from '@ui/DynamicFavicon';
 import { TenantAppWrapper } from './TenantAppWrapper';
 import ThemeSwitcher from '../modules/storefront/themes/ThemeSwitcher';
 import DefaultTheme from '@modules/storefront/themes/default/DefaultTheme';
+import PlatformLandingPage from '@modules/platform/pages/PlatformLandingPage';
 const App: React.FC = () => {
   return (
     <BrowserRouter>
@@ -132,65 +133,66 @@ const App: React.FC = () => {
 
                                               <Route path="menu" element={<AdminMenuLayout />}>
                                                 <Route index element={<Navigate to="kelola-menu" replace />} />
-                                                <Route path="tambah-menu-baru" element={<TambahMenuBaru />} />
-                                                <Route path="edit-menu/:slug" element={<EditMenuBaru />} />
-                                                <Route path="kelola-menu" element={<KelolaMenu />} />
-                                                <Route path="kategori-menu" element={<KategoriMenu />} />
+                                                <Route path="tambah-menu-baru" element={<AddNewMenu />} />
+                                                <Route path="edit-menu/:slug" element={<EditMenu />} />
+                                                <Route path="kelola-menu" element={<ManageMenu />} />
+                                                <Route path="kategori-menu" element={<MenuCategories />} />
                                               </Route>
 
-                                              <Route path="pesanan" element={<AdminPesananLayout />}>
+                                              <Route path="pesanan" element={<AdminOrdersLayout />}>
                                                 <Route index element={<Navigate to="semua-pesanan" replace />} />
-                                                <Route path="semua-pesanan" element={<SemuaPesanan />} />
-                                                <Route path="pesanan-aktif" element={<PesananAktif />} />
-                                                <Route path="riwayat-pesanan" element={<RiwayatPesanan />} />
+                                                <Route path="semua-pesanan" element={<AllOrders />} />
+                                                <Route path="pesanan-aktif" element={<ActiveOrders />} />
+                                                <Route path="riwayat-pesanan" element={<OrderHistory />} />
                                               </Route>
 
-                                              <Route path="reservasi" element={<AdminReservasiLayout />}>
+                                              <Route path="reservasi" element={<AdminReservationsLayout />}>
                                                 <Route index element={<Navigate to="jadwal-reservasi" replace />} />
-                                                <Route path="jadwal-reservasi" element={<JadwalReservasi />} />
-                                                <Route path="tambah-reservasi-manual" element={<TambahReservasiManual />} />
+                                                <Route path="jadwal-reservasi" element={<ReservationSchedule />} />
+                                                <Route path="tambah-reservasi-manual" element={<AddManualReservation />} />
                                               </Route>
 
-                                              <Route path="pelanggan" element={<AdminPelangganLayout />}>
+                                              <Route path="pelanggan" element={<AdminCustomersLayout />}>
                                                 <Route index element={<Navigate to="daftar-pelanggan" replace />} />
-                                                <Route path="daftar-pelanggan" element={<DaftarPelanggan />} />
-                                                <Route path="ulasan-feedback" element={<UlasanFeedback />} />
+                                                <Route path="daftar-pelanggan" element={<CustomerList />} />
+                                                <Route path="ulasan-feedback" element={<ReviewsFeedback />} />
                                                 <Route path="live-chat" element={<AdminLiveChatPage />} />
                                                 <Route path="statistik-chat" element={<StatistikChatPage />} />
                                               </Route>
 
-                                              <Route path="promosi" element={<AdminPromosiLayout />}>
+                                              <Route path="promosi" element={<AdminPromotionsLayout />}>
                                                 <Route index element={<Navigate to="banner-promo" replace />} />
-                                                <Route path="banner-promo" element={<BannerPromo />} />
-                                                <Route path="kode-diskon" element={<KodeDiskon />} />
+                                                <Route path="banner-promo" element={<PromoBanner />} />
+                                                <Route path="kode-diskon" element={<DiscountCodes />} />
                                                 <Route path="event-campaign" element={<EventCampaign />} />
-                                                <Route path="loyalti" element={<Loyalti />} />
+                                                <Route path="loyalti" element={<Loyalty />} />
                                               </Route>
 
-                                              <Route path="analitik" element={<AdminAnalitikLayout />}>
+                                              <Route path="analitik" element={<AdminAnalyticsLayout />}>
                                                 <Route index element={<Navigate to="statistik-penjualan" replace />} />
-                                                <Route path="statistik-penjualan" element={<StatistikPenjualan />} />
-                                                <Route path="traffic-website" element={<TrafficWebsite />} />
-                                                <Route path="menu-terlaris" element={<MenuTerlaris />} />
+                                                <Route path="statistik-penjualan" element={<SalesStatistics />} />
+                                                <Route path="traffic-website" element={<WebsiteTraffic />} />
+                                                <Route path="menu-terlaris" element={<BestSellingMenu />} />
                                               </Route>
 
-                                              <Route path="tampilan" element={<AdminTampilanLayout />}>
-                                                <Route index element={<KustomisasiHomepage />} />
+                                              <Route path="tampilan" element={<AdminAppearanceLayout />}>
+                                                <Route index element={<Navigate to="kustomisasi-homepage" replace />} />
+                                                <Route path="kustomisasi-homepage" element={<HomepageCustomization />} />
                                                 <Route path="edit-header" element={<EditHeaderPage />} />
                                                 <Route path="edit-section/:sectionId" element={<EditSectionPage />} />
                                                 <Route path="edit-footer" element={<EditFooterPage />} />
-                                                <Route path="tema-warna" element={<TampilanTemaWarna />} />
+                                                <Route path="tema-warna" element={<ThemeAndColors />} />
                                               </Route>
 
                                               <Route path="pengaturan" element={<AdminSettingsPage />}>
                                                 <Route index element={<Navigate to="profil-restoran" replace />} />
-                                                <Route path="profil-restoran" element={<ProfilRestoran />} />
-                                                <Route path="akun-pemilik" element={<AkunPemilik />} />
+                                                <Route path="profil-restoran" element={<RestaurantProfile />} />
+                                                <Route path="akun-pemilik" element={<OwnerAccount />} />
                                                 <Route path="manajemen-staff" element={<AdminStaffPage />} />
                                                 <Route path="email" element={<EmailSettings />} />
                                                 <Route path="domain" element={<DomainSettings />} />
-                                                <Route path="pengaturan-umum" element={<PengaturanUmum />} />
-                                                <Route path="tagihan-langganan" element={<TagihanLangganan />} />
+                                                <Route path="pengaturan-umum" element={<GeneralSettings />} />
+                                                <Route path="tagihan-langganan" element={<BillingSubscription />} />
                                               </Route>
 
                                               <Route path="components" element={<AdminComponentGalleryPage />} />
@@ -203,7 +205,7 @@ const App: React.FC = () => {
                                               <Route index element={<Navigate to="dasbor" replace />} />
                                               <Route path="dasbor" element={<CustomerServiceDashboardPage />} />
                                               <Route path="live-chat" element={<LiveChatPage />} />
-                                              <Route path="pesan-masuk" element={<PesanMasukPage />} />
+                                              <Route path="pesan-masuk" element={<InboxPage />} />
                                               <Route path="kelola-faq" element={<FaqManagementPage />} />
                                               <Route path="kelola-faq/baru" element={<FaqEditorPage />} />
                                               <Route path="kelola-faq/edit/:faqId" element={<FaqEditorPage />} />
