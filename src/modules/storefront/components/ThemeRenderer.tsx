@@ -6,11 +6,12 @@
 import React from 'react';
 import type { TenantConfig } from '@core/tenant/tenantConfig';
 import DefaultTheme from '../themes/default/DefaultTheme';
+import MinimalTheme from '../themes/minimal/MinimalTheme';
 
-// Theme registry - will expand with more themes
+// Theme registry - expanding with more themes
 const THEMES = {
     default: DefaultTheme,
-    minimal: DefaultTheme, // TODO: Create MinimalTheme
+    minimal: MinimalTheme,
     premium: DefaultTheme, // TODO: Create PremiumTheme
     dark: DefaultTheme,    // TODO: Create DarkTheme
 };

@@ -34,11 +34,17 @@ export const TenantAppWrapper: React.FC<TenantAppWrapperProps> = ({ children }) 
                         setTenant(config);
                         console.log('Tenant Config Loaded:', config);
                     } else {
-                        // Use default config for platform/staging
+                        // Use default config for platform/staging/demo
+                        const tenantName = resolution.tenantId === 'platform'
+                            ? 'DineOS Platform'
+                            : resolution.tenantId === 'demo'
+                                ? 'Demo Restaurant'
+                                : 'DineOS Staging';
+
                         setTenant({
                             id: resolution.tenantId,
                             slug: resolution.tenantId,
-                            name: resolution.tenantId === 'platform' ? 'DineOS Platform' : 'DineOS Staging',
+                            name: tenantName,
                             subdomain: resolution.tenantId,
                             capabilities: {
                                 hasLiveChat: true,
@@ -54,6 +60,21 @@ export const TenantAppWrapper: React.FC<TenantAppWrapperProps> = ({ children }) 
                                 canCustomizeTheme: true,
                                 canCustomizeDomain: true,
                                 canCustomizeEmail: true,
+                            },
+                            branding: {
+                                theme: resolution.tenantId === 'demo' ? 'minimal' : undefined,
+                                primaryColor: '#1F2937',
+                                secondaryColor: '#6B7280',
+                                accentColor: '#10B981',
+                            },
+                            homepageSettings: {
+                                heroTitle: resolution.tenantId === 'demo' ? 'Demo Restaurant' : undefined,
+                                heroSubtitle: resolution.tenantId === 'demo' ? 'Simple. Elegant. Delicious.' : undefined,
+                                ctaPrimary: 'Get Started',
+                                ctaSecondary: 'View Menu',
+                                showFeatures: true,
+                                showMenuPreview: true,
+                                showTestimonials: false,
                             },
                             isActive: true,
                             createdAt: new Date().toISOString(),
