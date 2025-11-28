@@ -2,16 +2,16 @@
 import React from 'react';
 // FIX: Re-typed import to fix "no exported member" errors.
 import { Outlet } from "react-router-dom";
-import CustomerSidebar from '../components/customer/CustomerSidebar';
-import CartPanel from '../components/customer/CartPanel';
-import { useCart } from '../hooks/useCart';
-import { useCustomerLayout } from '../contexts/CustomerLayoutContext';
-import { useChat } from '../hooks/useChat';
-import ChatPanel from '../components/customer/ChatPanel';
-import { useNotifications } from '../hooks/useNotifications';
-import NotificationPanel from '../components/customer/NotificationPanel';
+import CustomerSidebar from '@modules/customer/components/CustomerSidebar';
+import CartPanel from '@modules/customer/components/CartPanel';
+import { useCart } from '@core/hooks/useCart';
+import { useCustomerLayout } from '@core/contexts/CustomerLayoutContext';
+import { useChat } from '@core/hooks/useChat';
+import ChatPanel from '@modules/customer/components/ChatPanel';
+import { useNotifications } from '@core/hooks/useNotifications';
+import NotificationPanel from '@modules/customer/components/NotificationPanel';
 
-import { useTheme } from '../hooks/useTheme';
+import { useTheme } from '@core/hooks/useTheme';
 
 const CustomerDashboardLayout: React.FC = () => {
     const { isSidebarCollapsed, setIsSidebarCollapsed } = useCustomerLayout();

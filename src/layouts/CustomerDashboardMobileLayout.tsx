@@ -1,17 +1,17 @@
 
 import React from 'react';
 import { Outlet, useLocation, Link } from "react-router-dom";
-import BottomNav from '../components/customer/BottomNav';
-import MobileHeader from '../components/customer/MobileHeader';
-import { useChat } from '../hooks/useChat';
-import Modal from '../components/Modal';
-import CustomerChatView from '../components/customer/CustomerChatView';
-import { useNotifications } from '../hooks/useNotifications';
+import BottomNav from '@modules/customer/components/BottomNav';
+import MobileHeader from '@modules/customer/components/MobileHeader';
+import { useChat } from '@core/hooks/useChat';
+import Modal from '@ui/Modal';
+import CustomerChatView from '@modules/customer/components/CustomerChatView';
+import { useNotifications } from '@core/hooks/useNotifications';
 import { Bell } from 'lucide-react';
-import NotificationContent from '../components/customer/NotificationContent';
-import { useCart } from '../hooks/useCart';
-import CartContent from '../components/customer/CartContent';
-import { useTenantParam } from '../hooks/useTenantParam';
+import NotificationContent from '@modules/customer/components/NotificationContent';
+import { useCart } from '@core/hooks/useCart';
+import CartContent from '@modules/customer/components/CartContent';
+import { useTenantParam } from '@core/hooks/useTenantParam';
 
 const getPageTitle = (pathname: string): string => {
     if (pathname.startsWith('/akun/menu')) return 'Menu';

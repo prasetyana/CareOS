@@ -1,5 +1,5 @@
 import React from 'react';
-import { useWindowSize } from '../hooks/useWindowSize';
+import { useWindowSize } from '@core/hooks/useWindowSize';
 import CustomerDashboardLayout from './CustomerDashboardLayout';
 import CustomerDashboardMobileLayout from './CustomerDashboardMobileLayout';
 
