@@ -90,6 +90,7 @@ import EmailSettings from '@modules/admin/pages/admin-pengaturan/EmailSettings';
 import DomainSettings from '@modules/admin/pages/admin-pengaturan/DomainSettings';
 import DynamicFavicon from '@ui/DynamicFavicon';
 import RootPage from '@modules/platform/pages/RootPage';
+import { TenantAppWrapper } from './TenantAppWrapper';
 
 const App: React.FC = () => {
   return (
@@ -113,139 +114,160 @@ const App: React.FC = () => {
 
                               {/* All other routes need tenant context (including login) */}
                               <Route path="/*" element={
-                                <TenantProvider>
-                                  <DynamicFavicon />
-                                  <Routes>
-                                    {/* Tenant-specific login (uses tenant branding) */}
-                                    <Route path="/login" element={<LoginPage />} />
+                                <TenantAppWrapper>
+                                  {(tenant, loading) => {
+                                    if (loading) {
+                                      return (
+                                        <div style={{
+                                          display: 'flex',
+                                          alignItems: 'center',
+                                          justifyContent: 'center',
+                                          height: '100vh',
+                                          fontSize: '18px',
+                                          color: '#666'
+                                        }}>
+                                          Loading tenant...
+                                        </div>
+                                      );
+                                    }
 
-                                    {/* Customer Routes */}
-                                    <Route element={<ProtectedCustomerRoute />}>
-                                      <Route path="/akun" element={<ResponsiveCustomerLayout />}>
-                                        <Route index element={<Navigate to="beranda" replace />} />
-                                        <Route path="beranda" element={<CustomerDashboardHomePage />} />
+                                    return (
+                                      <TenantProvider value={tenant}>
+                                        <DynamicFavicon />
+                                        <Routes>
+                                          {/* Tenant-specific login (uses tenant branding) */}
+                                          <Route path="/login" element={<LoginPage />} />
 
-                                        <Route path="menu" element={<CustomerPesanPage />} />
-                                        <Route path="menu/:slug" element={<CustomerMenuDetailPage />} />
+                                          {/* Customer Routes */}
+                                          <Route element={<ProtectedCustomerRoute />}>
+                                            <Route path="/akun" element={<ResponsiveCustomerLayout />}>
+                                              <Route index element={<Navigate to="beranda" replace />} />
+                                              <Route path="beranda" element={<CustomerDashboardHomePage />} />
 
-                                        <Route path="pesanan" element={<CustomerPesananPage />}>
-                                          <Route index element={<Navigate to="aktif" replace />} />
-                                          <Route path="aktif" element={<CustomerPesananAktifPage />} />
-                                          <Route path="riwayat" element={<CustomerOrderHistoryPage />} />
-                                        </Route>
+                                              <Route path="menu" element={<CustomerPesanPage />} />
+                                              <Route path="menu/:slug" element={<CustomerMenuDetailPage />} />
 
-                                        <Route path="reservasi" element={<CustomerReservasiPage />}>
-                                          <Route index element={<Navigate to="buat" replace />} />
-                                          <Route path="buat" element={<CustomerBuatReservasiPage />} />
-                                          <Route path="reservasi" element={<CustomerReservationsPage filter="active" />} />
-                                          <Route path="riwayat" element={<CustomerReservationsPage filter="history" />} />
-                                        </Route>
+                                              <Route path="pesanan" element={<CustomerPesananPage />}>
+                                                <Route index element={<Navigate to="aktif" replace />} />
+                                                <Route path="aktif" element={<CustomerPesananAktifPage />} />
+                                                <Route path="riwayat" element={<CustomerOrderHistoryPage />} />
+                                              </Route>
 
-                                        <Route path="poin-hadiah" element={<CustomerRewardsPage />} />
-                                        <Route path="favorit" element={<CustomerFavoritesPage />} />
-                                        <Route path="notifikasi" element={<CustomerNotificationsPage />} />
+                                              <Route path="reservasi" element={<CustomerReservasiPage />}>
+                                                <Route index element={<Navigate to="buat" replace />} />
+                                                <Route path="buat" element={<CustomerBuatReservasiPage />} />
+                                                <Route path="reservasi" element={<CustomerReservationsPage filter="active" />} />
+                                                <Route path="riwayat" element={<CustomerReservationsPage filter="history" />} />
+                                              </Route>
 
-                                        <Route path="pengaturan" element={<CustomerSettingsLayout />}>
-                                          <Route index element={<Navigate to="profil" replace />} />
-                                          <Route path="profil" element={<CustomerProfileSettingsPage />} />
-                                          <Route path="keamanan" element={<CustomerSecurityPage />} />
-                                          <Route path="preferensi" element={<CustomerPreferencesSettingsPage />} />
-                                          <Route path="alamat" element={<CustomerAddressesPage />} />
-                                          <Route path="pembayaran" element={<CustomerPaymentMethodsPage />} />
-                                        </Route>
-                                      </Route>
-                                    </Route>
+                                              <Route path="poin-hadiah" element={<CustomerRewardsPage />} />
+                                              <Route path="favorit" element={<CustomerFavoritesPage />} />
+                                              <Route path="notifikasi" element={<CustomerNotificationsPage />} />
 
-                                    {/* Admin Routes */}
-                                    <Route element={<ProtectedAdminRoute />}>
-                                      <Route path="/admin" element={<AdminLayout />}>
-                                        <Route index element={<Navigate to="dasbor" replace />} />
-                                        <Route path="dasbor" element={<AdminDashboardPage />} />
+                                              <Route path="pengaturan" element={<CustomerSettingsLayout />}>
+                                                <Route index element={<Navigate to="profil" replace />} />
+                                                <Route path="profil" element={<CustomerProfileSettingsPage />} />
+                                                <Route path="keamanan" element={<CustomerSecurityPage />} />
+                                                <Route path="preferensi" element={<CustomerPreferencesSettingsPage />} />
+                                                <Route path="alamat" element={<CustomerAddressesPage />} />
+                                                <Route path="pembayaran" element={<CustomerPaymentMethodsPage />} />
+                                              </Route>
+                                            </Route>
+                                          </Route>
 
-                                        <Route path="menu" element={<AdminMenuLayout />}>
-                                          <Route index element={<Navigate to="kelola-menu" replace />} />
-                                          <Route path="tambah-menu-baru" element={<TambahMenuBaru />} />
-                                          <Route path="edit-menu/:slug" element={<EditMenuBaru />} />
-                                          <Route path="kelola-menu" element={<KelolaMenu />} />
-                                          <Route path="kategori-menu" element={<KategoriMenu />} />
-                                        </Route>
+                                          {/* Admin Routes */}
+                                          <Route element={<ProtectedAdminRoute />}>
+                                            <Route path="/admin" element={<AdminLayout />}>
+                                              <Route index element={<Navigate to="dasbor" replace />} />
+                                              <Route path="dasbor" element={<AdminDashboardPage />} />
 
-                                        <Route path="pesanan" element={<AdminPesananLayout />}>
-                                          <Route index element={<Navigate to="semua-pesanan" replace />} />
-                                          <Route path="semua-pesanan" element={<SemuaPesanan />} />
-                                          <Route path="pesanan-aktif" element={<PesananAktif />} />
-                                          <Route path="riwayat-pesanan" element={<RiwayatPesanan />} />
-                                        </Route>
+                                              <Route path="menu" element={<AdminMenuLayout />}>
+                                                <Route index element={<Navigate to="kelola-menu" replace />} />
+                                                <Route path="tambah-menu-baru" element={<TambahMenuBaru />} />
+                                                <Route path="edit-menu/:slug" element={<EditMenuBaru />} />
+                                                <Route path="kelola-menu" element={<KelolaMenu />} />
+                                                <Route path="kategori-menu" element={<KategoriMenu />} />
+                                              </Route>
 
-                                        <Route path="reservasi" element={<AdminReservasiLayout />}>
-                                          <Route index element={<Navigate to="jadwal-reservasi" replace />} />
-                                          <Route path="jadwal-reservasi" element={<JadwalReservasi />} />
-                                          <Route path="tambah-reservasi-manual" element={<TambahReservasiManual />} />
-                                        </Route>
+                                              <Route path="pesanan" element={<AdminPesananLayout />}>
+                                                <Route index element={<Navigate to="semua-pesanan" replace />} />
+                                                <Route path="semua-pesanan" element={<SemuaPesanan />} />
+                                                <Route path="pesanan-aktif" element={<PesananAktif />} />
+                                                <Route path="riwayat-pesanan" element={<RiwayatPesanan />} />
+                                              </Route>
 
-                                        <Route path="pelanggan" element={<AdminPelangganLayout />}>
-                                          <Route index element={<Navigate to="daftar-pelanggan" replace />} />
-                                          <Route path="daftar-pelanggan" element={<DaftarPelanggan />} />
-                                          <Route path="ulasan-feedback" element={<UlasanFeedback />} />
-                                          <Route path="live-chat" element={<AdminLiveChatPage />} />
-                                          <Route path="statistik-chat" element={<StatistikChatPage />} />
-                                        </Route>
+                                              <Route path="reservasi" element={<AdminReservasiLayout />}>
+                                                <Route index element={<Navigate to="jadwal-reservasi" replace />} />
+                                                <Route path="jadwal-reservasi" element={<JadwalReservasi />} />
+                                                <Route path="tambah-reservasi-manual" element={<TambahReservasiManual />} />
+                                              </Route>
 
-                                        <Route path="promosi" element={<AdminPromosiLayout />}>
-                                          <Route index element={<Navigate to="banner-promo" replace />} />
-                                          <Route path="banner-promo" element={<BannerPromo />} />
-                                          <Route path="kode-diskon" element={<KodeDiskon />} />
-                                          <Route path="event-campaign" element={<EventCampaign />} />
-                                          <Route path="loyalti" element={<Loyalti />} />
-                                        </Route>
+                                              <Route path="pelanggan" element={<AdminPelangganLayout />}>
+                                                <Route index element={<Navigate to="daftar-pelanggan" replace />} />
+                                                <Route path="daftar-pelanggan" element={<DaftarPelanggan />} />
+                                                <Route path="ulasan-feedback" element={<UlasanFeedback />} />
+                                                <Route path="live-chat" element={<AdminLiveChatPage />} />
+                                                <Route path="statistik-chat" element={<StatistikChatPage />} />
+                                              </Route>
 
-                                        <Route path="analitik" element={<AdminAnalitikLayout />}>
-                                          <Route index element={<Navigate to="statistik-penjualan" replace />} />
-                                          <Route path="statistik-penjualan" element={<StatistikPenjualan />} />
-                                          <Route path="traffic-website" element={<TrafficWebsite />} />
-                                          <Route path="menu-terlaris" element={<MenuTerlaris />} />
-                                        </Route>
+                                              <Route path="promosi" element={<AdminPromosiLayout />}>
+                                                <Route index element={<Navigate to="banner-promo" replace />} />
+                                                <Route path="banner-promo" element={<BannerPromo />} />
+                                                <Route path="kode-diskon" element={<KodeDiskon />} />
+                                                <Route path="event-campaign" element={<EventCampaign />} />
+                                                <Route path="loyalti" element={<Loyalti />} />
+                                              </Route>
 
-                                        <Route path="tampilan" element={<AdminTampilanLayout />}>
-                                          <Route index element={<KustomisasiHomepage />} />
-                                          <Route path="edit-header" element={<EditHeaderPage />} />
-                                          <Route path="edit-section/:sectionId" element={<EditSectionPage />} />
-                                          <Route path="edit-footer" element={<EditFooterPage />} />
-                                          <Route path="tema-warna" element={<TampilanTemaWarna />} />
-                                        </Route>
+                                              <Route path="analitik" element={<AdminAnalitikLayout />}>
+                                                <Route index element={<Navigate to="statistik-penjualan" replace />} />
+                                                <Route path="statistik-penjualan" element={<StatistikPenjualan />} />
+                                                <Route path="traffic-website" element={<TrafficWebsite />} />
+                                                <Route path="menu-terlaris" element={<MenuTerlaris />} />
+                                              </Route>
 
-                                        <Route path="pengaturan" element={<AdminSettingsPage />}>
-                                          <Route index element={<Navigate to="profil-restoran" replace />} />
-                                          <Route path="profil-restoran" element={<ProfilRestoran />} />
-                                          <Route path="akun-pemilik" element={<AkunPemilik />} />
-                                          <Route path="manajemen-staff" element={<AdminStaffPage />} />
-                                          <Route path="email" element={<EmailSettings />} />
-                                          <Route path="domain" element={<DomainSettings />} />
-                                          <Route path="pengaturan-umum" element={<PengaturanUmum />} />
-                                          <Route path="tagihan-langganan" element={<TagihanLangganan />} />
-                                        </Route>
+                                              <Route path="tampilan" element={<AdminTampilanLayout />}>
+                                                <Route index element={<KustomisasiHomepage />} />
+                                                <Route path="edit-header" element={<EditHeaderPage />} />
+                                                <Route path="edit-section/:sectionId" element={<EditSectionPage />} />
+                                                <Route path="edit-footer" element={<EditFooterPage />} />
+                                                <Route path="tema-warna" element={<TampilanTemaWarna />} />
+                                              </Route>
 
-                                        <Route path="components" element={<AdminComponentGalleryPage />} />
-                                      </Route>
-                                    </Route>
+                                              <Route path="pengaturan" element={<AdminSettingsPage />}>
+                                                <Route index element={<Navigate to="profil-restoran" replace />} />
+                                                <Route path="profil-restoran" element={<ProfilRestoran />} />
+                                                <Route path="akun-pemilik" element={<AkunPemilik />} />
+                                                <Route path="manajemen-staff" element={<AdminStaffPage />} />
+                                                <Route path="email" element={<EmailSettings />} />
+                                                <Route path="domain" element={<DomainSettings />} />
+                                                <Route path="pengaturan-umum" element={<PengaturanUmum />} />
+                                                <Route path="tagihan-langganan" element={<TagihanLangganan />} />
+                                              </Route>
 
-                                    {/* Customer Service Routes */}
-                                    <Route element={<ProtectedCsRoute />}>
-                                      <Route path="/cs" element={<CustomerServiceLayout />}>
-                                        <Route index element={<Navigate to="dasbor" replace />} />
-                                        <Route path="dasbor" element={<CustomerServiceDashboardPage />} />
-                                        <Route path="live-chat" element={<LiveChatPage />} />
-                                        <Route path="pesan-masuk" element={<PesanMasukPage />} />
-                                        <Route path="kelola-faq" element={<FaqManagementPage />} />
-                                        <Route path="kelola-faq/baru" element={<FaqEditorPage />} />
-                                        <Route path="kelola-faq/edit/:faqId" element={<FaqEditorPage />} />
-                                      </Route>
-                                    </Route>
+                                              <Route path="components" element={<AdminComponentGalleryPage />} />
+                                            </Route>
+                                          </Route>
 
-                                    {/* Catch-all for tenant routes */}
-                                    <Route path="*" element={<Navigate to="/login" replace />} />
-                                  </Routes>
-                                </TenantProvider>
+                                          {/* Customer Service Routes */}
+                                          <Route element={<ProtectedCsRoute />}>
+                                            <Route path="/cs" element={<CustomerServiceLayout />}>
+                                              <Route index element={<Navigate to="dasbor" replace />} />
+                                              <Route path="dasbor" element={<CustomerServiceDashboardPage />} />
+                                              <Route path="live-chat" element={<LiveChatPage />} />
+                                              <Route path="pesan-masuk" element={<PesanMasukPage />} />
+                                              <Route path="kelola-faq" element={<FaqManagementPage />} />
+                                              <Route path="kelola-faq/baru" element={<FaqEditorPage />} />
+                                              <Route path="kelola-faq/edit/:faqId" element={<FaqEditorPage />} />
+                                            </Route>
+                                          </Route>
+
+                                          {/* Catch-all for tenant routes */}
+                                          <Route path="*" element={<Navigate to="/login" replace />} />
+                                        </Routes>
+                                      </TenantProvider>
+                                    );
+                                  }}
+                                </TenantAppWrapper>
                               } />
                             </Routes>
                           </LiveChatProvider>

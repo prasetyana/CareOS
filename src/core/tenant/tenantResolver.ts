@@ -98,37 +98,105 @@ function resolveFromHeader(headers: Headers): TenantResolution {
 }
 
 /**
+ * Mock tenant lookup by subdomain
+ * TODO: Replace with actual Supabase query
+ */
+async function lookupSubdomainTenant(subdomain: string): Promise<string | null> {
+    // Mock data - replace with actual database query
+    const mockTenants: Record<string, string> = {
+        'demo': 'demo-tenant-id',
+        'staging': 'staging-tenant-id',
+        'test': 'test-tenant-id',
+    };
+
+    return mockTenants[subdomain] || null;
+}
+
+/**
+ * Mock tenant lookup by custom domain
+ * TODO: Replace with actual Supabase query
+ */
+async function lookupCustomDomainTenant(domain: string): Promise<string | null> {
+    // Mock data - replace with actual database query
+    const mockCustomDomains: Record<string, string> = {
+        'warungbunda.com': 'warungbunda-tenant-id',
+        'restomakmur.com': 'restomakmur-tenant-id',
+    };
+
+    return mockCustomDomains[domain] || null;
+}
+
+/**
  * Resolve tenant using multiple strategies
- * Priority: custom-domain > subdomain > path > header > default
+ * Priority: platform > staging > custom-domain > subdomain > path > header > default
  */
 export async function resolveTenant(
     hostname: string,
     pathname: string,
     headers?: Headers
 ): Promise<TenantResolution> {
-    // Try custom domain first
-    const customDomain = await resolveFromCustomDomain(hostname);
-    if (customDomain.isValid) return customDomain;
+    // 1. Check if platform domain (careos.cloud or localhost)
+    if (hostname === 'careos.cloud' || hostname === 'localhost' || hostname.startsWith('localhost:')) {
+        return {
+            tenantId: 'platform',
+            source: 'default',
+            isValid: true,
+        };
+    }
 
-    // Try subdomain
-    const subdomain = resolveFromSubdomain(hostname);
-    if (subdomain.isValid) return subdomain;
+    // 2. Check if staging domain
+    if (hostname === 'staging.careos.cloud') {
+        return {
+            tenantId: 'staging',
+            source: 'subdomain',
+            isValid: true,
+        };
+    }
 
-    // Try path
+    // 3. Try custom domain first (highest priority for tenants)
+    const customDomainTenantId = await lookupCustomDomainTenant(hostname);
+    if (customDomainTenantId) {
+        return {
+            tenantId: customDomainTenantId,
+            source: 'custom-domain',
+            isValid: true,
+        };
+    }
+
+    // 4. Try subdomain (e.g., demo.careos.cloud)
+    if (hostname.endsWith('.careos.cloud')) {
+        const parts = hostname.split('.');
+        const subdomain = parts[0];
+
+        // Ignore www and common subdomains
+        if (subdomain !== 'www' && subdomain !== 'app' && subdomain !== 'api' && subdomain !== 'staging') {
+            const tenantId = await lookupSubdomainTenant(subdomain);
+
+            if (tenantId) {
+                return {
+                    tenantId,
+                    source: 'subdomain',
+                    isValid: true,
+                };
+            }
+        }
+    }
+
+    // 5. Try path-based detection
     const path = resolveFromPath(pathname);
     if (path.isValid) return path;
 
-    // Try header
+    // 6. Try header-based detection
     if (headers) {
         const header = resolveFromHeader(headers);
         if (header.isValid) return header;
     }
 
-    // Return default/invalid
+    // 7. Return default (platform)
     return {
-        tenantId: null,
+        tenantId: 'platform',
         source: 'default',
-        isValid: false,
+        isValid: true,
     };
 }
 
