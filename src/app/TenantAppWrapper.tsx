@@ -18,11 +18,27 @@ export const TenantAppWrapper: React.FC<TenantAppWrapperProps> = ({ children }) 
     useEffect(() => {
         async function loadTenant() {
             try {
-                // Resolve tenant from current URL
-                const resolution = await resolveTenantCached(
-                    window.location.hostname,
-                    window.location.pathname
-                );
+                // Check for tenant query parameter first
+                const urlParams = new URLSearchParams(window.location.search);
+                const tenantParam = urlParams.get('tenant');
+
+                let resolution;
+
+                if (tenantParam) {
+                    // Use tenant from query parameter
+                    resolution = {
+                        tenantId: tenantParam,
+                        source: 'query' as const,
+                        isValid: true,
+                    };
+                    console.log('Tenant from query parameter:', tenantParam);
+                } else {
+                    // Resolve tenant from URL
+                    resolution = await resolveTenantCached(
+                        window.location.hostname,
+                        window.location.pathname
+                    );
+                }
 
                 console.log('Tenant Resolution:', resolution);
 
