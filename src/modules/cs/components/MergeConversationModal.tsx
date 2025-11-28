@@ -1,6 +1,6 @@
 import React from 'react';
-import { Conversation } from '../../data/mockDB';
-import Modal from '../Modal';
+import { Conversation } from '@core/data/mockDB';
+import Modal from '@ui/Modal';
 import { Merge } from 'lucide-react';
 
 interface MergeConversationModalProps {
@@ -26,7 +26,7 @@ const MergeConversationModal: React.FC<MergeConversationModalProps> = ({ isOpen,
                                     <span className={`capitalize font-medium ${convo.status === 'closed' ? 'text-danger' : 'text-success'}`}>{convo.status === 'closed' ? 'Ditutup' : 'Terbuka'}</span>
                                 </div>
                             </div>
-                            <button 
+                            <button
                                 onClick={() => onMergeConfirm(convo.id)}
                                 className="flex-shrink-0 ml-4 px-3 py-1.5 text-xs font-semibold bg-accent text-white rounded-full hover:bg-opacity-90 transition-opacity"
                             >

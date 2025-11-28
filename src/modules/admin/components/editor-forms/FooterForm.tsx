@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { FooterConfig } from '../../../types/homepage';
+import { FooterConfig } from '@core/types/homepage';
 
 interface FooterFormProps {
   initialData: FooterConfig;

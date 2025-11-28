@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { PromotionSectionProps } from '../../../types/homepage';
+import { PromotionSectionProps } from '@core/types/homepage';
 
 interface PromotionSectionFormProps {
   initialData: PromotionSectionProps;

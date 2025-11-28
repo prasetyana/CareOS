@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { useLiveChat } from '../../contexts/LiveChatContext';
+import { useLiveChat } from '@core/contexts/LiveChatContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface CannedResponsesPopoverProps {

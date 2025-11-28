@@ -265,7 +265,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       await supabase.auth.signOut();
       setUser(null);
-      navigate('/login');
+      // Preserve tenant parameter
+      const urlParams = new URLSearchParams(window.location.search);
+      const tenantParam = urlParams.get('tenant');
+      const loginPath = tenantParam ? `/login?tenant=${tenantParam}` : '/login';
+
+      navigate(loginPath);
     } catch (error) {
       console.error('Logout error:', error);
     }
@@ -468,4 +473,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     </AuthContext.Provider>
   );
 
+};
+
+export const useAuth = () => {
+  const context = React.useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
 };

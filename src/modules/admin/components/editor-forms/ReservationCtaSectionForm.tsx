@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { ReservationCtaSectionProps } from '../../../types/homepage';
+import { ReservationCtaSectionProps } from '@core/types/homepage';
 
 interface ReservationCtaSectionFormProps {
   initialData: ReservationCtaSectionProps;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Conversation, mockUsers } from '../../data/mockDB';
-import TypingIndicator from '../TypingIndicator';
+import { Conversation, mockUsers } from '@core/data/mockDB';
+import TypingIndicator from '@ui/TypingIndicator';
 import { ThumbsDown, ThumbsUp, Clock } from 'lucide-react';
 
 interface ConversationListItemProps {
@@ -18,7 +18,7 @@ const ConversationListItem: React.FC<ConversationListItemProps> = ({ conversatio
 
     useEffect(() => {
         const lastCustomerMessage = [...conversation.messages].reverse().find(m => m.sender.type === 'customer' && m.type === 'public');
-        
+
         if (!lastCustomerMessage || conversation.status !== 'open' || (assignee && conversation.messages.slice(-1)[0]?.sender.id === assignee.id)) {
             setWaitingTime(null);
             return;
@@ -63,7 +63,7 @@ const ConversationListItem: React.FC<ConversationListItemProps> = ({ conversatio
                         {conversation.csat.rating} ★
                     </div>
                 ) : waitingTime !== null ? (
-                     <div className={`flex items-center gap-1 text-xs font-semibold tabular-nums ${getSlaColor(waitingTime)}`}>
+                    <div className={`flex items-center gap-1 text-xs font-semibold tabular-nums ${getSlaColor(waitingTime)}`}>
                         <Clock size={12} />
                         {formatSlaTime(waitingTime)}
                     </div>
@@ -92,7 +92,7 @@ const ConversationListItem: React.FC<ConversationListItemProps> = ({ conversatio
                 )}
             </div>
             {assignee && (
-                <div 
+                <div
                     className="absolute bottom-2 right-2 w-5 h-5 rounded-full bg-accent/20 flex items-center justify-center text-accent text-[10px] font-bold border border-white/50"
                     title={`Ditugaskan ke ${assignee.name}`}
                 >
@@ -100,7 +100,7 @@ const ConversationListItem: React.FC<ConversationListItemProps> = ({ conversatio
                 </div>
             )}
             {conversation.unreadCount > 0 && !isClosed && !needsAttention && (
-                 <div className="absolute right-3 top-3 w-2 h-2 bg-accent rounded-full"></div>
+                <div className="absolute right-3 top-3 w-2 h-2 bg-accent rounded-full"></div>
             )}
             {needsAttention && (
                 <div className="absolute right-3 top-3.5">

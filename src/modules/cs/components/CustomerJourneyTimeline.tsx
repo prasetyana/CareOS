@@ -1,5 +1,5 @@
 import React from 'react';
-import { CustomerActivity } from '../../data/mockDB';
+import { CustomerActivity } from '@core/data/mockDB';
 import { Eye, ShoppingBag, MessageSquare } from 'lucide-react';
 
 interface CustomerJourneyTimelineProps {

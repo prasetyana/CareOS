@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TestimonialsSectionProps, TestimonialItem } from '../../../types/homepage';
+import { TestimonialsSectionProps, TestimonialItem } from '@core/types/homepage';
 import { X, Plus } from 'lucide-react';
 
 interface TestimonialsSectionFormProps {

@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { LocationSectionProps } from '../../../types/homepage';
+import { LocationSectionProps } from '@core/types/homepage';
 
 interface LocationSectionFormProps {
   initialData: LocationSectionProps;

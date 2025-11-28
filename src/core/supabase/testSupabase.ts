@@ -1,7 +1,7 @@
 // Test Supabase Connection
 // Run this in browser console to test if Supabase is connected
 
-import { supabase } from './lib/supabase'
+import { supabase } from './supabase'
 
 async function testSupabaseConnection() {
     console.log('Testing Supabase connection...')

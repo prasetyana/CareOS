@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { User, Order, Conversation, CustomerActivity, mockUsers, fetchOrdersByCustomerId, fetchConversationsByCustomerId, fetchCustomerActivityByCustomerId, fetchKnowledgeBase, KnowledgeBaseItem } from '@core/data/mockDB';
 import { useLiveChat } from '@core/contexts/LiveChatContext';
-import { User as UserIcon, Monitor, Smartphone, X, Plus, Send } from 'lucide-react';
+import { User as UserIcon, Monitor, Smartphone, X, Plus, Send, MessageSquare } from 'lucide-react';
 import CustomerJourneyTimeline from './CustomerJourneyTimeline';
 import PastConversationModal from './PastConversationModal';
 import MergeConversationModal from './MergeConversationModal';

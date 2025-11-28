@@ -45,23 +45,9 @@ import EventCampaign from '@modules/admin/pages/admin-promosi/EventCampaign';
 import Loyalti from '@modules/admin/pages/admin-promosi/Loyalti';
 import EditHeaderPage from '@modules/admin/pages/admin-tampilan/EditHeaderPage';
 import EditFooterPage from '@modules/admin/pages/admin-tampilan/EditFooterPage';
-import ProtectedCustomerRoute from './router/ProtectedCustomerRoute';
-import CustomerOrderHistoryPage from '@modules/customer/pages/CustomerOrderHistoryPage';
-import CustomerReservationsPage from '@modules/customer/pages/CustomerReservationsPage';
-import CustomerRewardsPage from '@modules/customer/pages/CustomerRewardsPage';
-import CustomerPesanPage from '@modules/customer/pages/CustomerPesanPage';
-import CustomerBuatReservasiPage from '@modules/customer/pages/CustomerBuatReservasiPage';
-import CustomerMenuDetailPage from '@modules/customer/pages/CustomerMenuDetailPage';
-import CustomerDashboardHomePage from '@modules/customer/pages/CustomerDashboardHomePage';
-import CustomerFavoritesPage from '@modules/customer/pages/CustomerFavoritesPage';
 import { CartProvider } from '@core/contexts/CartContext';
-import ResponsiveCustomerLayout from '@layouts/ResponsiveCustomerLayout';
 import { CustomerLayoutProvider } from '@core/contexts/CustomerLayoutContext';
-import CustomerPesananPage from '@modules/customer/pages/CustomerPesananPage';
-import CustomerPesananAktifPage from '@modules/customer/pages/CustomerPesananAktifPage';
-import CustomerReservasiPage from '@modules/customer/pages/CustomerReservasiPage';
 import { NotificationProvider } from '@core/contexts/NotificationContext';
-import CustomerNotificationsPage from '@modules/customer/pages/CustomerNotificationsPage';
 import { ChatProvider } from '@core/contexts/ChatContext';
 import ProtectedCsRoute from './router/ProtectedCsRoute';
 import CustomerServiceLayout from '@layouts/CustomerServiceLayout';
@@ -73,26 +59,18 @@ import FaqEditorPage from '@modules/cs/pages/FaqEditorPage';
 import AdminLiveChatPage from '@modules/admin/pages/admin-pelanggan/AdminLiveChatPage';
 import { LiveChatProvider } from '@core/contexts/LiveChatContext';
 import StatistikChatPage from '@modules/admin/pages/admin-pelanggan/StatistikChatPage';
-import CustomerSettingsLayout from '@modules/customer/pages/CustomerSettingsLayout';
-import CustomerProfileSettingsPage from '@modules/customer/pages/CustomerProfileSettingsPage';
-import CustomerSecurityPage from '@modules/customer/pages/CustomerSecurityPage';
-import CustomerPreferencesSettingsPage from '@modules/customer/pages/CustomerPreferencesSettingsPage';
-import CustomerAddressesPage from '@modules/customer/pages/CustomerAddressesPage';
-import CustomerPaymentMethodsPage from '@modules/customer/pages/CustomerPaymentMethodsPage';
 import { LocationProvider } from '@core/contexts/LocationContext';
 import { FavoritesProvider } from '@core/contexts/FavoritesContext';
-import { TenantProvider } from '@core/tenant';
+import { TenantProvider, TenantConfig } from '@core/tenant';
 import RestaurantRegisterPage from '@modules/platform/pages/RestaurantRegisterPage';
 import OnboardingWizardPage from '@modules/platform/pages/OnboardingWizardPage';
-import PlatformLandingPage from '@modules/platform/pages/PlatformLandingPage';
 import AdminStaffPage from '@modules/admin/pages/admin-staff/AdminStaffPage';
 import EmailSettings from '@modules/admin/pages/admin-pengaturan/EmailSettings';
 import DomainSettings from '@modules/admin/pages/admin-pengaturan/DomainSettings';
 import DynamicFavicon from '@ui/DynamicFavicon';
-import RootPage from '@modules/platform/pages/RootPage';
 import { TenantAppWrapper } from './TenantAppWrapper';
-import DynamicHomepage from '@modules/customer/pages/DynamicHomepage';
-
+import ThemeSwitcher from '../modules/storefront/themes/ThemeSwitcher';
+import DefaultTheme from '@modules/storefront/themes/default/DefaultTheme';
 const App: React.FC = () => {
   return (
     <BrowserRouter>
@@ -109,7 +87,6 @@ const App: React.FC = () => {
                           <LiveChatProvider>
                             <Routes>
                               {/* Platform routes (NO tenant context needed) */}
-                              <Route path="/" element={<RootPage />} />
                               <Route path="/register" element={<RestaurantRegisterPage />} />
                               <Route path="/onboarding" element={<OnboardingWizardPage />} />
 
@@ -137,47 +114,15 @@ const App: React.FC = () => {
                                         <DynamicFavicon />
                                         <Routes>
                                           {/* Tenant root - dynamic based on auth */}
-                                          <Route path="/" element={<DynamicHomepage />} />
+                                          <Route path="/" element={
+                                            tenant?.id === 'platform'
+                                              ? <PlatformLandingPage />
+                                              : tenant ? <ThemeSwitcher tenant={tenant as TenantConfig} mode="public" /> : <Navigate to="/login" />
+                                          } />
+                                          <Route path="/account/*" element={tenant ? <DefaultTheme tenant={tenant as TenantConfig} mode="customer" /> : <Navigate to="/login" />} />
 
                                           {/* Tenant-specific login (uses tenant branding) */}
                                           <Route path="/login" element={<LoginPage />} />
-
-                                          {/* Customer Routes */}
-                                          <Route element={<ProtectedCustomerRoute />}>
-                                            <Route path="/akun" element={<ResponsiveCustomerLayout />}>
-                                              <Route index element={<Navigate to="beranda" replace />} />
-                                              <Route path="beranda" element={<CustomerDashboardHomePage />} />
-
-                                              <Route path="menu" element={<CustomerPesanPage />} />
-                                              <Route path="menu/:slug" element={<CustomerMenuDetailPage />} />
-
-                                              <Route path="pesanan" element={<CustomerPesananPage />}>
-                                                <Route index element={<Navigate to="aktif" replace />} />
-                                                <Route path="aktif" element={<CustomerPesananAktifPage />} />
-                                                <Route path="riwayat" element={<CustomerOrderHistoryPage />} />
-                                              </Route>
-
-                                              <Route path="reservasi" element={<CustomerReservasiPage />}>
-                                                <Route index element={<Navigate to="buat" replace />} />
-                                                <Route path="buat" element={<CustomerBuatReservasiPage />} />
-                                                <Route path="reservasi" element={<CustomerReservationsPage filter="active" />} />
-                                                <Route path="riwayat" element={<CustomerReservationsPage filter="history" />} />
-                                              </Route>
-
-                                              <Route path="poin-hadiah" element={<CustomerRewardsPage />} />
-                                              <Route path="favorit" element={<CustomerFavoritesPage />} />
-                                              <Route path="notifikasi" element={<CustomerNotificationsPage />} />
-
-                                              <Route path="pengaturan" element={<CustomerSettingsLayout />}>
-                                                <Route index element={<Navigate to="profil" replace />} />
-                                                <Route path="profil" element={<CustomerProfileSettingsPage />} />
-                                                <Route path="keamanan" element={<CustomerSecurityPage />} />
-                                                <Route path="preferensi" element={<CustomerPreferencesSettingsPage />} />
-                                                <Route path="alamat" element={<CustomerAddressesPage />} />
-                                                <Route path="pembayaran" element={<CustomerPaymentMethodsPage />} />
-                                              </Route>
-                                            </Route>
-                                          </Route>
 
                                           {/* Admin Routes */}
                                           <Route element={<ProtectedAdminRoute />}>
@@ -284,8 +229,8 @@ const App: React.FC = () => {
             </HomepageProvider>
           </ToastProvider>
         </ThemeProvider>
-      </AuthProvider>
-    </BrowserRouter>
+      </AuthProvider >
+    </BrowserRouter >
   );
 };
 

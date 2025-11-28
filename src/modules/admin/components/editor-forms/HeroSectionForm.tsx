@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { HeroSectionProps } from '../../../types/homepage';
+import { HeroSectionProps } from '@core/types/homepage';
 
 interface HeroSectionFormProps {
   initialData: HeroSectionProps;

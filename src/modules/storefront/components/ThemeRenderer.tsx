@@ -18,18 +18,18 @@ const THEMES = {
 
 interface ThemeRendererProps {
     tenant: TenantConfig;
+    mode?: 'public' | 'customer';
 }
 
-export const ThemeRenderer: React.FC<ThemeRendererProps> = ({ tenant }) => {
-    // Get theme ID from tenant branding, fallback to 'default'
+export const ThemeRenderer: React.FC<ThemeRendererProps> = ({ tenant, mode = 'public' }) => {
+    // 1. Get theme ID from tenant config
     const themeId = tenant.branding?.theme || 'default';
 
-    // Get theme component, fallback to default if not found
-    const ThemeComponent = THEMES[themeId] || THEMES.default;
+    // 2. Resolve theme component
+    const ThemeComponent = THEMES[themeId as keyof typeof THEMES] || THEMES.default;
 
-    console.log(`Rendering theme: ${themeId} for tenant: ${tenant.name}`);
-
-    return <ThemeComponent tenant={tenant} />;
+    // 3. Render theme
+    return <ThemeComponent tenant={tenant} mode={mode} />;
 };
 
 export default ThemeRenderer;

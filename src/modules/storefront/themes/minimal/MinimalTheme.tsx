@@ -9,9 +9,10 @@ import { Hero, Features, MenuPreview, Footer } from './components';
 
 interface MinimalThemeProps {
     tenant: TenantConfig;
+    mode?: 'public' | 'customer';
 }
 
-const MinimalTheme: React.FC<MinimalThemeProps> = ({ tenant }) => {
+const MinimalTheme: React.FC<MinimalThemeProps> = ({ tenant, mode = 'public' }) => {
     return (
         <div className="min-h-screen bg-white dark:bg-gray-900">
             <Hero tenant={tenant} />

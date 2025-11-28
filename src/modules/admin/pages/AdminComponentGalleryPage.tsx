@@ -1,12 +1,12 @@
 
 import React, { useState } from 'react';
-import MenuCard from '@modules/customer/components/MenuCard';
+import MenuCard from '@modules/storefront/customer/components/MenuCard';
 import { menuItems } from '@core/data/mockDB';
 import Alert from '@ui/Alert';
 import Modal from '@ui/Modal';
 import ToggleSwitch from '@ui/ToggleSwitch';
 import SegmentedControl from '@ui/SegmentedControl';
-import MenuCardSkeleton from '@modules/customer/components/MenuCardSkeleton';
+import MenuCardSkeleton from '@modules/storefront/customer/components/MenuCardSkeleton';
 import Dropdown from '@ui/Dropdown';
 import StatCard from '@ui/StatCard';
 import LineChart from '@ui/LineChart';

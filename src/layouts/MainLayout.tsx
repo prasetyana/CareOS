@@ -3,8 +3,8 @@
 import React from 'react';
 // FIX: Re-typed import to fix "no exported member" errors.
 import { Outlet } from "react-router-dom";
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+import Header from './Header';
+import Footer from './Footer';
 
 const MainLayout: React.FC = () => {
   return (

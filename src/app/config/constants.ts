@@ -36,7 +36,7 @@ export const ROUTES = {
 
     // Customer routes
     customer: {
-        dashboard: '/akun/beranda',
+        dashboard: '/',
         menu: '/akun/menu',
         orders: '/akun/pesanan',
         reservations: '/akun/reservasi',

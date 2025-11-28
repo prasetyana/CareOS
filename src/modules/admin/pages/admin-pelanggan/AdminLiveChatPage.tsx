@@ -1,4 +1,32 @@
 
+import React, { useState, useEffect, useRef } from 'react';
+import { useAuth } from '@core/hooks/useAuth';
+import { useLiveChat, ConversationFilter, AIAssistAction } from '@core/contexts/LiveChatContext';
+import { mockUsers, User } from '@core/data/mockDB';
+import { useClickOutside } from '@core/hooks/useClickOutside';
+import SegmentedControl from '@ui/SegmentedControl';
+import ConversationListItem from '@modules/cs/components/ConversationListItem';
+import ChatBubble from '@modules/cs/components/ChatBubble';
+import TypingIndicator from '@ui/TypingIndicator';
+import CannedResponsesPopover from '@modules/cs/components/CannedResponsesPopover';
+import CustomerDetailsPanel from '@modules/cs/components/CustomerDetailsPanel';
+import {
+    Clock,
+    MessageSquare,
+    StickyNote,
+    Loader2,
+    Sparkles,
+    FileText,
+    MessageSquareText,
+    Wand2,
+    Zap,
+    Paperclip,
+    Smile,
+    Send
+} from 'lucide-react';
+
+const emojis = ['👍', '👋', '🎉', '❤️', '😂', '😮', '😢', '😡'];
+
 const shouldShowDateSeparator = (currentMessage: any, previousMessage: any) => {
     if (!previousMessage) return true;
     const currentDate = new Date(currentMessage.timestamp);
@@ -17,7 +45,7 @@ const formatDateSeparator = (timestamp: string): string => {
     return date.toLocaleDateString('id-ID', { month: 'long', day: 'numeric', year: 'numeric' });
 };
 
-const ReadReceipt: React.FC<{ conversation: import('../../data/mockDB').Conversation | null }> = ({ conversation }) => {
+const ReadReceipt: React.FC<{ conversation: import('@core/data/mockDB').Conversation | null }> = ({ conversation }) => {
     if (!conversation) return null;
 
     const lastMessage = [...conversation.messages].reverse().find(m => m.sender.type === 'agent' && m.type === 'public');

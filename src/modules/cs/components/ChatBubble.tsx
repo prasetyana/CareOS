@@ -1,5 +1,5 @@
 import React from 'react';
-import { Message } from '../../data/mockDB';
+import { Message } from '@core/data/mockDB';
 
 interface ChatBubbleProps {
     message: Message;
@@ -16,7 +16,7 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ message }) => {
             </div>
         )
     }
-    
+
     if (message.type === 'internal') {
         return (
             <div className="my-2 mx-auto max-w-[90%]">
@@ -31,7 +31,7 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ message }) => {
 
     return (
         <div className={`flex items-end gap-2 group ${isAgent ? 'justify-end' : 'justify-start'}`}>
-             {!isAgent && (
+            {!isAgent && (
                 <div className="w-8 h-8 rounded-full bg-neutral-200 dark:bg-neutral-600 flex-shrink-0 flex items-center justify-center font-bold text-sm text-neutral-500">
                     {message.sender.name.charAt(0)}
                 </div>
@@ -45,8 +45,8 @@ const ChatBubble: React.FC<ChatBubbleProps> = ({ message }) => {
                 >
                     {message.attachment && message.attachment.type === 'image' && (
                         <a href={message.attachment.url} target="_blank" rel="noopener noreferrer">
-                            <img 
-                                src={message.attachment.url} 
+                            <img
+                                src={message.attachment.url}
                                 alt="Attachment"
                                 className="rounded-lg max-w-full h-auto max-h-48 cursor-pointer"
                             />

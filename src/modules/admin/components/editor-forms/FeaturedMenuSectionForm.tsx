@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { FeaturedMenuSectionProps } from '../../../types/homepage';
+import { FeaturedMenuSectionProps } from '@core/types/homepage';
 
 interface FeaturedMenuSectionFormProps {
   initialData: FeaturedMenuSectionProps;

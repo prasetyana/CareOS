@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { AboutSectionProps } from '../../../types/homepage';
+import { AboutSectionProps } from '@core/types/homepage';
 
 interface AboutSectionFormProps {
   initialData: AboutSectionProps;

@@ -3,7 +3,7 @@
  * Run this once to set up your test data
  */
 
-import { supabase } from '../src/lib/supabase'
+import { supabase } from '../src/core/supabase/supabase'
 
 async function createDemoTenant() {
     console.log('🚀 Creating demo tenant...')

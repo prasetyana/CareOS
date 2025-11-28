@@ -19,6 +19,8 @@ interface ThemeContextType {
   setTheme: (theme: Theme) => void;
   mode: Mode;
   toggleMode: () => void;
+  layout: string;
+  setLayout: (layout: string) => void;
 }
 
 export const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -78,8 +80,25 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     setMode(prevMode => (prevMode === 'light' ? 'dark' : 'light'));
   }, []);
 
+  const [layout, setLayoutState] = useState<string>(() => {
+    try {
+      return window.localStorage.getItem('app-layout') || 'default';
+    } catch (error) {
+      return 'default';
+    }
+  });
+
+  const setLayout = useCallback((newLayout: string) => {
+    try {
+      window.localStorage.setItem('app-layout', newLayout);
+    } catch (error) {
+      console.error("Failed to save layout to localStorage", error);
+    }
+    setLayoutState(newLayout);
+  }, []);
+
   return (
-    <ThemeContext.Provider value={{ theme, setTheme, mode, toggleMode }}>
+    <ThemeContext.Provider value={{ theme, setTheme, mode, toggleMode, layout, setLayout }}>
       {children}
     </ThemeContext.Provider>
   );

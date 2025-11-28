@@ -12,15 +12,36 @@ const TenantContext = createContext<TenantContextType | undefined>(undefined)
 
 interface TenantProviderProps {
     children: ReactNode
+    value?: TenantData | null
 }
 
-export const TenantProvider: React.FC<TenantProviderProps> = ({ children }) => {
-    const [tenant, setTenant] = useState<TenantData | null>(null)
-    const [loading, setLoading] = useState(true)
+export const TenantProvider: React.FC<TenantProviderProps> = ({ children, value }) => {
+    const [tenant, setTenant] = useState<TenantData | null>(value || null)
+    const [loading, setLoading] = useState(!value)
     const [error, setError] = useState<string | null>(null)
     const fetchingTenant = React.useRef(false);
 
+    // Update state when value prop changes
+    useEffect(() => {
+        if (value) {
+            setTenant(value);
+            setLoading(false);
+
+            // Apply branding dynamically
+            if (value.primaryColor) document.documentElement.style.setProperty('--primary-color', value.primaryColor)
+            if (value.secondaryColor) document.documentElement.style.setProperty('--secondary-color', value.secondaryColor)
+            if (value.fontFamily) document.documentElement.style.setProperty('--font-family', value.fontFamily)
+
+            // Update page title
+            if (value.businessName) document.title = `${value.businessName} - Order Online`
+            else if (value.name) document.title = `${value.name} - Order Online`
+        }
+    }, [value]);
+
     const loadTenant = async (silent = false) => {
+        // If value is provided, don't fetch
+        if (value) return;
+
         // Removed fetchingTenant ref check to prevent Strict Mode deadlock
         // if (fetchingTenant.current) return;
 
@@ -52,11 +73,15 @@ export const TenantProvider: React.FC<TenantProviderProps> = ({ children }) => {
     };
 
     useEffect(() => {
-        loadTenant();
-    }, [])
+        if (!value) {
+            loadTenant();
+        }
+    }, [value])
 
     const refreshTenant = async () => {
-        await loadTenant(true);
+        if (!value) {
+            await loadTenant(true);
+        }
     };
 
     if (loading) {
@@ -73,22 +98,28 @@ export const TenantProvider: React.FC<TenantProviderProps> = ({ children }) => {
         )
     }
 
-    if (error || !tenant) {
-        return (
-            <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: '100vh',
-                fontFamily: 'Inter, sans-serif',
-                padding: '20px',
-                textAlign: 'center'
-            }}>
-                <h1 style={{ fontSize: '24px', marginBottom: '10px' }}>Restaurant Not Found</h1>
-                <p style={{ color: '#666' }}>{error}</p>
-            </div>
-        )
+    // Allow rendering children even if tenant is null if value was explicitly passed as null (though unlikely in our app flow)
+    // But typically we want to show error if no tenant found.
+    // However, TenantAppWrapper handles loading state, so if we are here, we might have a tenant.
+
+    if (!tenant && !value) {
+        if (error) {
+            return (
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '100vh',
+                    fontFamily: 'Inter, sans-serif',
+                    padding: '20px',
+                    textAlign: 'center'
+                }}>
+                    <h1 style={{ fontSize: '24px', marginBottom: '10px' }}>Restaurant Not Found</h1>
+                    <p style={{ color: '#666' }}>{error}</p>
+                </div>
+            )
+        }
     }
 
     return (

@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { HeaderConfig } from '../../../types/homepage';
+import { HeaderConfig } from '@core/types/homepage';
 
 interface HeaderFormProps {
   initialData: HeaderConfig;

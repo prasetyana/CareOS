@@ -20,7 +20,8 @@ export const TenantAppWrapper: React.FC<TenantAppWrapperProps> = ({ children }) 
             try {
                 // Check for tenant query parameter first
                 const urlParams = new URLSearchParams(window.location.search);
-                const tenantParam = urlParams.get('tenant');
+                const rawTenantParam = urlParams.get('tenant');
+                const tenantParam = rawTenantParam?.trim();
 
                 let resolution;
 
@@ -51,13 +52,16 @@ export const TenantAppWrapper: React.FC<TenantAppWrapperProps> = ({ children }) 
                         console.log('Tenant Config Loaded:', config);
                     } else {
                         // Use default config for platform/staging/demo
-                        const tenantName = resolution.tenantId === 'platform'
-                            ? 'DineOS Platform'
-                            : resolution.tenantId === 'demo'
-                                ? 'Demo Restaurant'
-                                : 'DineOS Staging';
+                        console.log('Constructing default config for:', resolution.tenantId);
 
-                        setTenant({
+                        // Robust name detection
+                        let tenantName = 'DineOS Staging';
+                        if (resolution.tenantId === 'platform') tenantName = 'DineOS Platform';
+                        else if (resolution.tenantId === 'demo' || resolution.tenantId.includes('demo')) tenantName = 'Demo Restaurant';
+
+                        console.log('Determined tenant name:', tenantName);
+
+                        const newTenantConfig = {
                             id: resolution.tenantId,
                             slug: resolution.tenantId,
                             name: tenantName,
@@ -78,14 +82,14 @@ export const TenantAppWrapper: React.FC<TenantAppWrapperProps> = ({ children }) 
                                 canCustomizeEmail: true,
                             },
                             branding: {
-                                theme: resolution.tenantId === 'demo' ? 'minimal' : undefined,
+                                theme: (resolution.tenantId === 'demo' || resolution.tenantId.includes('demo')) ? 'minimal' : undefined,
                                 primaryColor: '#1F2937',
                                 secondaryColor: '#6B7280',
                                 accentColor: '#10B981',
                             },
                             homepageSettings: {
-                                heroTitle: resolution.tenantId === 'demo' ? 'Demo Restaurant' : undefined,
-                                heroSubtitle: resolution.tenantId === 'demo' ? 'Simple. Elegant. Delicious.' : undefined,
+                                heroTitle: (resolution.tenantId === 'demo' || resolution.tenantId.includes('demo')) ? 'Demo Restaurant' : undefined,
+                                heroSubtitle: (resolution.tenantId === 'demo' || resolution.tenantId.includes('demo')) ? 'Simple. Elegant. Delicious.' : undefined,
                                 ctaPrimary: 'Get Started',
                                 ctaSecondary: 'View Menu',
                                 showFeatures: true,
@@ -94,7 +98,10 @@ export const TenantAppWrapper: React.FC<TenantAppWrapperProps> = ({ children }) 
                             },
                             isActive: true,
                             createdAt: new Date().toISOString(),
-                        });
+                        };
+
+                        console.log('Setting tenant config:', newTenantConfig);
+                        setTenant(newTenantConfig as TenantConfig);
                     }
                 }
             } catch (error) {

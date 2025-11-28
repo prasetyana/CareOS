@@ -4,6 +4,7 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTenantParam } from '@core/hooks/useTenantParam';
 import type { TenantConfig } from '@core/tenant/tenantConfig';
 
 interface HeroProps {
@@ -12,6 +13,7 @@ interface HeroProps {
 
 const Hero: React.FC<HeroProps> = ({ tenant }) => {
     const navigate = useNavigate();
+    const { withTenant } = useTenantParam();
 
     const heroTitle = tenant.homepageSettings?.heroTitle || `Welcome to ${tenant.name}`;
     const heroSubtitle = tenant.homepageSettings?.heroSubtitle || 'Experience delicious food and exceptional service';
@@ -33,14 +35,14 @@ const Hero: React.FC<HeroProps> = ({ tenant }) => {
                 {/* CTA Buttons */}
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                     <button
-                        onClick={() => navigate('/login')}
+                        onClick={() => navigate(withTenant('/login'))}
                         className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
                     >
                         {ctaPrimary}
                     </button>
 
                     <button
-                        onClick={() => navigate('/account/menu')}
+                        onClick={() => navigate(withTenant('/account/menu'))}
                         className="px-8 py-4 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 border-2 border-gray-200 dark:border-gray-700"
                     >
                         {ctaSecondary}

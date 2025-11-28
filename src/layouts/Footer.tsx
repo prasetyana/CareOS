@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { useHomepageContent } from '../hooks/useHomepageContent';
+import { useHomepageContent } from '@core/hooks/useHomepageContent';
 
 const Footer: React.FC = () => {
   const { config } = useHomepageContent();

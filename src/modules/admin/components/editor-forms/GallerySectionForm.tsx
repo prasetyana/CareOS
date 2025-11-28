@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { GallerySectionProps } from '../../../types/homepage';
+import { GallerySectionProps } from '@core/types/homepage';
 import { X, Plus } from 'lucide-react';
 
 interface GallerySectionFormProps {

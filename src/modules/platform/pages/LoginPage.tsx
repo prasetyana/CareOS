@@ -34,7 +34,7 @@ const LoginPage: React.FC = () => {
       } else if (user.role === 'cs') {
         window.location.href = `/cs/dasbor${tenantParam}`;
       } else {
-        window.location.href = `/akun/beranda${tenantParam}`;
+        window.location.href = `/${tenantParam}`;
       }
     }
   }, [user, navigate]);

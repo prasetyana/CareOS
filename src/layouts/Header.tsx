@@ -2,11 +2,11 @@
 import React, { useState } from 'react';
 // FIX: Re-typed import to fix "no exported member" errors.
 import { Link } from "react-router-dom";
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '@core/hooks/useAuth';
 import { Menu, X, Sun, Moon, User } from 'lucide-react';
-import { useHomepageContent } from '../hooks/useHomepageContent';
-import { useTheme } from '../hooks/useTheme';
-import { useTenantParam } from '../hooks/useTenantParam';
+import { useHomepageContent } from '@core/hooks/useHomepageContent';
+import { useTheme } from '@core/hooks/useTheme';
+import { useTenantParam } from '@core/hooks/useTenantParam';
 import { useTenant } from '@core/tenant';
 
 const Header: React.FC = () => {
@@ -64,7 +64,7 @@ const Header: React.FC = () => {
                     </Link>
                   ) : (
                     <Link
-                      to={withTenant("/akun/beranda")}
+                      to={withTenant("/")}
                       className="bg-brand-primary text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-red-700 transition-colors duration-300 inline-flex items-center"
                     >
                       <User className="w-4 h-4 mr-2" />
@@ -73,7 +73,7 @@ const Header: React.FC = () => {
                   )}
                 </>
               ) : (
-                <Link to="/login" className="bg-brand-primary text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-red-700 transition-colors duration-300">
+                <Link to={withTenant("/login")} className="bg-brand-primary text-white px-5 py-2 rounded-full text-sm font-medium hover:bg-red-700 transition-colors duration-300">
                   Masuk
                 </Link>
               )}
@@ -116,7 +116,7 @@ const Header: React.FC = () => {
                     </Link>
                   ) : (
                     <>
-                      <Link to={withTenant("/akun/beranda")} onClick={closeAllMenus} className="block px-3 py-2 rounded-md text-base font-medium text-brand-secondary dark:text-gray-300 hover:text-brand-dark dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700">Dasbor Akun</Link>
+                      <Link to={withTenant("/")} onClick={closeAllMenus} className="block px-3 py-2 rounded-md text-base font-medium text-brand-secondary dark:text-gray-300 hover:text-brand-dark dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700">Dasbor Akun</Link>
                       <button onClick={() => { logout(); closeAllMenus(); }} className="w-full text-left bg-red-600 text-white px-3 py-2 rounded-md text-base font-medium hover:bg-red-700 transition-colors">
                         Keluar
                       </button>
@@ -124,7 +124,7 @@ const Header: React.FC = () => {
                   )}
                 </>
               ) : (
-                <Link to="/login" onClick={closeAllMenus} className="block text-center bg-brand-primary text-white px-3 py-2 rounded-md text-base font-medium hover:bg-red-700 transition-colors">
+                <Link to={withTenant("/login")} onClick={closeAllMenus} className="block text-center bg-brand-primary text-white px-3 py-2 rounded-md text-base font-medium hover:bg-red-700 transition-colors">
                   Masuk
                 </Link>
               )}

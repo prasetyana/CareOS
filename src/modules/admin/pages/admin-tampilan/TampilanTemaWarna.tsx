@@ -7,22 +7,34 @@ type Theme = 'Garnet' | 'Sapphire' | 'Emerald' | 'Amethyst';
 const themeOptions: Theme[] = ['Garnet', 'Sapphire', 'Emerald', 'Amethyst'];
 
 const TampilanTemaWarna: React.FC = () => {
-    const { theme, setTheme } = useTheme();
+    const themeContext = useTheme();
 
     return (
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
             <h2 className="text-2xl font-bold font-sans text-brand-dark dark:text-gray-200 border-b dark:border-gray-700 pb-4 mb-6">Tema & Warna</h2>
             <div className="max-w-md space-y-8">
                 <div>
-                    <h3 className="text-lg font-semibold text-brand-dark dark:text-gray-200">Tema</h3>
+                    <h3 className="text-lg font-semibold text-brand-dark dark:text-gray-200">Layout Homepage</h3>
+                    <p className="text-brand-secondary dark:text-gray-400 mt-1 mb-4 text-sm">
+                        Pilih tata letak halaman depan toko Anda.
+                    </p>
+                    <SegmentedControl
+                        id="layout-selector"
+                        options={['default', 'minimal']}
+                        value={themeContext.layout}
+                        onChange={(val) => themeContext.setLayout(val)}
+                    />
+                </div>
+                <div>
+                    <h3 className="text-lg font-semibold text-brand-dark dark:text-gray-200">Tema Warna</h3>
                     <p className="text-brand-secondary dark:text-gray-400 mt-1 mb-4 text-sm">
                         Ubah warna aksen utama di seluruh situs web secara instan.
                     </p>
                     <SegmentedControl
                         id="theme-selector"
                         options={themeOptions}
-                        value={theme}
-                        onChange={(val) => setTheme(val as Theme)}
+                        value={themeContext.theme}
+                        onChange={(val) => themeContext.setTheme(val as Theme)}
                     />
                 </div>
                 <div>
