@@ -5,10 +5,7 @@
 
 import React from 'react';
 import type { TenantConfig } from '@core/tenant/tenantConfig';
-import Hero from './components/Hero';
-import Features from './components/Features';
-import MenuPreview from './components/MenuPreview';
-import Footer from './components/Footer';
+import { Hero, Features, MenuPreview, Footer } from './components';
 
 interface MinimalThemeProps {
     tenant: TenantConfig;
