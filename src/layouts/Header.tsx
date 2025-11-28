@@ -7,7 +7,7 @@ import { Menu, X, Sun, Moon, User } from 'lucide-react';
 import { useHomepageContent } from '../hooks/useHomepageContent';
 import { useTheme } from '../hooks/useTheme';
 import { useTenantParam } from '../hooks/useTenantParam';
-import { useTenant } from '../contexts/TenantContext';
+import { useTenant } from '@core/tenant';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

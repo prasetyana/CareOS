@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Building2, MapPin, Phone, Mail, Globe, Save, Loader2, Clock, Navigation, Pencil, CheckCircle } from 'lucide-react';
-import { useTenant } from '@core/contexts/TenantContext';
+import { useTenant } from '@core/tenant';
 import { useToast } from '@core/contexts/ToastContext';
 import { updateTenantProfile } from '@core/services/tenantService';
 import EmailVerificationModal from '@ui/EmailVerificationModal';

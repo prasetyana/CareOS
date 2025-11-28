@@ -22,7 +22,7 @@ import { useLiveChat } from '@core/contexts/LiveChatContext';
 import AgentStatusControl from '@modules/cs/components/AgentStatusControl';
 import TeamStatusList from '@modules/cs/components/TeamStatusList';
 import { useTenantParam } from '@core/hooks/useTenantParam';
-import { useTenant } from '@core/contexts/TenantContext';
+import { useTenant } from '@core/tenant';
 
 interface SidebarProps {
   isCollapsed: boolean;

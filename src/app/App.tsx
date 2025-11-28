@@ -81,7 +81,7 @@ import CustomerAddressesPage from '@modules/customer/pages/CustomerAddressesPage
 import CustomerPaymentMethodsPage from '@modules/customer/pages/CustomerPaymentMethodsPage';
 import { LocationProvider } from '@core/contexts/LocationContext';
 import { FavoritesProvider } from '@core/contexts/FavoritesContext';
-import { TenantProvider } from '@core/contexts/TenantContext';
+import { TenantProvider } from '@core/tenant';
 import RestaurantRegisterPage from '@modules/platform/pages/RestaurantRegisterPage';
 import OnboardingWizardPage from '@modules/platform/pages/OnboardingWizardPage';
 import PlatformLandingPage from '@modules/platform/pages/PlatformLandingPage';

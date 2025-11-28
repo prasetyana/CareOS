@@ -22,6 +22,7 @@ export default defineConfig(({ mode }) => {
         '@modules': path.resolve(__dirname, './src/modules'),
         '@ui': path.resolve(__dirname, './src/ui'),
         '@layouts': path.resolve(__dirname, './src/layouts'),
+        '@assets': path.resolve(__dirname, './src/assets'),
       }
     }
   };

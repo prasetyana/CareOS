@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useTenant } from '@core/contexts/TenantContext';
+import { useTenant } from '@core/tenant';
 
 export const logoDataUri = `data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M16 3C8.82 3 3 8.82 3 16C3 23.18 8.82 29 16 29C23.18 29 29 23.18 29 16C29 8.82 23.18 3 16 3ZM16 26C10.486 26 6 21.514 6 16C6 10.486 10.486 6 16 6V26Z' fill='currentColor'/%3E%3C/svg%3E`;
 

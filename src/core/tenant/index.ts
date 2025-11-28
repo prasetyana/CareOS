@@ -1,5 +1,7 @@
 /**
  * Tenant Module
+/**
+ * Tenant Module
  * Central export point for all tenant-related functionality
  */
 
@@ -12,6 +14,9 @@ export {
     getTenantSEO,
     defaultCapabilities,
 } from './tenantConfig';
+
+// Tenant Context
+export { TenantProvider, useTenant } from './TenantContext';
 
 export type { TenantSource, TenantResolution } from './tenantResolver';
 export type { TenantConfig, TenantCapabilities, TenantBranding, TenantSEO } from './tenantConfig';

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useTenant } from '@core/contexts/TenantContext';
+import { useTenant } from '@core/tenant';
 
 const DynamicFavicon: React.FC = () => {
     const { tenant } = useTenant();

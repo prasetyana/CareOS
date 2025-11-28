@@ -36,6 +36,9 @@
       ],
       "@layouts/*": [
         "./src/layouts/*"
+      ],
+      "@assets/*": [
+        "./src/assets/*"
       ]
     },
     "allowImportingTsExtensions": true,

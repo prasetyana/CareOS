@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Globe, Link2, Crown, Copy, Check, AlertCircle, Loader2, ExternalLink } from 'lucide-react';
-import { useTenant } from '@core/contexts/TenantContext';
+import { useTenant } from '@core/tenant';
 import { useToast } from '@core/contexts/ToastContext';
 
 const DomainSettingsPage: React.FC = () => {

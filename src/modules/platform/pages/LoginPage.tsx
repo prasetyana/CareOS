@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 // FIX: Re-typed import to fix "no exported member" errors.
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from '@core/hooks/useAuth';
-import { useTenant } from '@core/contexts/TenantContext';
+import { useTenant } from '@core/tenant';
 import { Eye, EyeOff, UtensilsCrossed } from 'lucide-react';
 import Email2FAModal from '@modules/platform/components/Email2FAModal';
 

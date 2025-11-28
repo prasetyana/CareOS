@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Mail, Server, Crown, Check, AlertCircle, Loader2, Send, Shield, ShieldCheck } from 'lucide-react';
-import { useTenant } from '@core/contexts/TenantContext';
+import { useTenant } from '@core/tenant';
 import { useToast } from '@core/contexts/ToastContext';
 
 const EmailSettingsPage: React.FC = () => {
