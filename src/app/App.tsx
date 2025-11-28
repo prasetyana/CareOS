@@ -91,6 +91,7 @@ import DomainSettings from '@modules/admin/pages/admin-pengaturan/DomainSettings
 import DynamicFavicon from '@ui/DynamicFavicon';
 import RootPage from '@modules/platform/pages/RootPage';
 import { TenantAppWrapper } from './TenantAppWrapper';
+import DynamicHomepage from '@modules/customer/pages/DynamicHomepage';
 
 const App: React.FC = () => {
   return (
@@ -135,6 +136,9 @@ const App: React.FC = () => {
                                       <TenantProvider value={tenant}>
                                         <DynamicFavicon />
                                         <Routes>
+                                          {/* Tenant root - dynamic based on auth */}
+                                          <Route path="/" element={<DynamicHomepage />} />
+
                                           {/* Tenant-specific login (uses tenant branding) */}
                                           <Route path="/login" element={<LoginPage />} />
 
