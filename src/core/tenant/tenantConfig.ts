@@ -29,7 +29,20 @@ export interface TenantBranding {
     favicon?: string;
     primaryColor?: string;
     secondaryColor?: string;
+    accentColor?: string;
     fontFamily?: string;
+    theme?: 'default' | 'minimal' | 'premium' | 'dark';
+    homepageLayout?: 'food-hero' | 'modern' | 'classic';
+}
+
+export interface TenantHomepageSettings {
+    heroTitle?: string;
+    heroSubtitle?: string;
+    ctaPrimary?: string;
+    ctaSecondary?: string;
+    showFeatures?: boolean;
+    showMenuPreview?: boolean;
+    showTestimonials?: boolean;
 }
 
 export interface TenantSEO {
@@ -47,6 +60,7 @@ export interface TenantConfig {
     subdomain: string; // Subdomain on platform
     capabilities: TenantCapabilities;
     branding?: TenantBranding;
+    homepageSettings?: TenantHomepageSettings;
     seo?: TenantSEO;
     isActive: boolean;
     createdAt: string;
