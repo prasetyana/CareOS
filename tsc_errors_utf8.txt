@@ -1,0 +1,24 @@
+﻿src/modules/cs/components/CustomerDetailsPanel.tsx(4,1): error TS1128: Declaration or statement expected.
+src/modules/customer/pages/CustomerAddressesPage.tsx(24,5): error TS1128: Declaration or statement expected.
+src/modules/customer/pages/CustomerAddressesPage.tsx(25,1): error TS1128: Declaration or statement expected.
+src/modules/customer/pages/CustomerBuatReservasiPage.tsx(179,1): error TS1128: Declaration or statement expected.
+src/modules/customer/pages/CustomerOrderHistoryPage.tsx(1,10): error TS1005: ';' expected.
+src/modules/customer/pages/CustomerOrderHistoryPage.tsx(2,15): error TS1005: ';' expected.
+src/modules/customer/pages/CustomerOrderHistoryPage.tsx(3,21): error TS1005: ';' expected.
+src/modules/customer/pages/CustomerOrderHistoryPage.tsx(4,34): error TS1005: ';' expected.
+src/modules/customer/pages/CustomerOrderHistoryPage.tsx(196,1): error TS1128: Declaration or statement expected.
+src/modules/customer/pages/CustomerPesananAktifPage.tsx(284,1): error TS1128: Declaration or statement expected.
+src/modules/customer/pages/CustomerPesanPage.tsx(1,1): error TS1128: Declaration or statement expected.
+src/modules/customer/pages/CustomerPreferencesSettingsPage.tsx(1,1): error TS1128: Declaration or statement expected.
+src/modules/customer/pages/CustomerProfileSettingsPage.tsx(2,12): error TS1005: ';' expected.
+src/modules/customer/pages/CustomerProfileSettingsPage.tsx(2,29): error TS1005: ';' expected.
+src/modules/customer/pages/CustomerProfileSettingsPage.tsx(2,34): error TS1128: Declaration or statement expected.
+src/modules/customer/pages/CustomerProfileSettingsPage.tsx(4,1): error TS1109: Expression expected.
+src/modules/customer/pages/CustomerReservasiPage.tsx(48,1): error TS1128: Declaration or statement expected.
+src/modules/customer/pages/CustomerReservationsPage.tsx(1,10): error TS1005: ';' expected.
+src/modules/customer/pages/CustomerReservationsPage.tsx(2,17): error TS1005: ';' expected.
+src/modules/customer/pages/CustomerReservationsPage.tsx(3,5): error TS1109: Expression expected.
+src/modules/customer/pages/CustomerReservationsPage.tsx(5,1): error TS1128: Declaration or statement expected.
+src/modules/customer/pages/CustomerSettingsLayout.tsx(1,27): error TS1005: ';' expected.
+src/modules/customer/pages/CustomerSettingsLayout.tsx(1,43): error TS1128: Declaration or statement expected.
+src/modules/customer/pages/CustomerSettingsLayout.tsx(2,1): error TS1128: Declaration or statement expected.

@@ -2,14 +2,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 // FIX: Re-typed import to fix "no exported member" errors.
 import { Outlet, useLocation } from "react-router-dom";
-import Sidebar from '../components/admin/Sidebar';
-import { useTheme } from '../hooks/useTheme';
+import Sidebar from '@modules/admin/components/Sidebar';
+import { useTheme } from '@core/hooks/useTheme';
 import { Sun, Moon, Bell, Mail } from 'lucide-react';
-import NotificationDropdown from '../components/admin/NotificationDropdown';
-import MessageDropdown from '../components/admin/MessageDropdown';
-import { useClickOutside } from '../hooks/useClickOutside';
-import AdminBottomNav from '../components/admin/AdminBottomNav';
-import { useNotifications } from '../hooks/useNotifications';
+import NotificationDropdown from '@modules/admin/components/NotificationDropdown';
+import MessageDropdown from '@modules/admin/components/MessageDropdown';
+import { useClickOutside } from '@core/hooks/useClickOutside';
+import AdminBottomNav from '@modules/admin/components/AdminBottomNav';
+import { useNotifications } from '@core/hooks/useNotifications';
 
 const getPageTitle = (pathname: string): string => {
   const pathParts = pathname.split('/').filter(Boolean);

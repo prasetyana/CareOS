@@ -1,0 +1,5 @@
+src/modules/customer/pages/CustomerOrderHistoryPage.tsx(17,19): error TS1138: Parameter declaration expected.
+src/modules/customer/pages/CustomerOrderHistoryPage.tsx(17,22): error TS1005: ';' expected.
+src/modules/customer/pages/CustomerOrderHistoryPage.tsx(49,2): error TS1128: Declaration or statement expected.
+src/modules/customer/pages/CustomerOrderHistoryPage.tsx(49,10): error TS1005: ';' expected.
+src/modules/customer/pages/CustomerOrderHistoryPage.tsx(208,1): error TS1128: Declaration or statement expected.

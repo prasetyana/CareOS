@@ -1,0 +1,253 @@
+import React, { useState, useEffect } from 'react';
+import ReactDOM from 'react-dom';
+import { X, Search, MapPin, Clock, Navigation } from 'lucide-react';
+import { Branch, fetchBranches } from '@core/data/mockDB';
+import { useLocation } from '@core/contexts/LocationContext';
+
+const LocationModal: React.FC = () => {
+    const { isLocationModalOpen, closeLocationModal, selectedBranch, setSelectedBranch } = useLocation();
+    const [branches, setBranches] = useState<Branch[]>([]);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [viewingBranch, setViewingBranch] = useState<Branch | null>(null);
+
+    useEffect(() => {
+        if (isLocationModalOpen) {
+            loadBranches();
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+            setViewingBranch(null);
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isLocationModalOpen]);
+
+    const loadBranches = async () => {
+        setLoading(true);
+        try {
+            const data = await fetchBranches();
+            setBranches(data);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const filteredBranches = branches.filter(branch =>
+        branch.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        branch.area.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        branch.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        branch.mall?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    const groupedBranches = filteredBranches.reduce((acc, branch) => {
+        if (!acc[branch.area]) {
+            acc[branch.area] = [];
+        }
+        acc[branch.area].push(branch);
+        return acc;
+    }, {} as Record<string, Branch[]>);
+
+    const handleSelectBranch = (branch: Branch) => {
+        setSelectedBranch(branch);
+        closeLocationModal();
+    };
+
+    const handleViewMap = (branch: Branch) => {
+        setViewingBranch(branch);
+    };
+
+    const getStatusColor = (status: Branch['status']) => {
+        switch (status) {
+            case 'Open':
+                return 'text-green-600 bg-green-50';
+            case 'Closing Soon':
+                return 'text-orange-600 bg-orange-50';
+            case 'Closed':
+                return 'text-red-600 bg-red-50';
+        }
+    };
+
+    if (!isLocationModalOpen) return null;
+
+    const modalContent = (
+        <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4">
+            {/* Full-page blur backdrop */}
+            <div
+                className="absolute inset-0 bg-black/60 backdrop-blur-lg"
+                onClick={closeLocationModal}
+            />
+
+            {/* Centered modal */}
+            <div className="relative bg-white dark:bg-neutral-800 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[85vh] flex flex-col z-10">
+                {/* Header */}
+                <div className="flex items-center justify-between p-6 border-b border-neutral-200 dark:border-neutral-700">
+                    <div>
+                        <h2 className="text-2xl font-bold text-text-primary">
+                            {viewingBranch ? viewingBranch.name : 'Pilih Lokasi'}
+                        </h2>
+                        <p className="text-sm text-text-muted mt-1">
+                            {viewingBranch ? viewingBranch.address : 'Pilih cabang terdekat untuk melihat menu & harga'}
+                        </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        {viewingBranch && (
+                            <button
+                                onClick={() => setViewingBranch(null)}
+                                className="px-4 py-2 bg-neutral-100 dark:bg-neutral-700 text-text-primary rounded-lg font-medium hover:bg-neutral-200 dark:hover:bg-neutral-600 transition-colors text-sm"
+                            >
+                                Kembali
+                            </button>
+                        )}
+                        <button
+                            onClick={closeLocationModal}
+                            className="p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors"
+                            aria-label="Tutup"
+                        >
+                            <X className="w-6 h-6 text-text-muted" />
+                        </button>
+                    </div>
+                </div>
+
+                {viewingBranch ? (
+                    /* Map View */
+                    <div className="flex-1 flex flex-col overflow-hidden">
+                        {/* Google Maps Embed with Directions */}
+                        <div className="flex-1 relative">
+                            <iframe
+                                src={`https://www.google.com/maps/embed/v1/directions?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&origin=current+location&destination=${viewingBranch.coordinates.lat},${viewingBranch.coordinates.lng}&mode=driving`}
+                                className="w-full h-full border-0"
+                                allowFullScreen
+                                loading="lazy"
+                                referrerPolicy="no-referrer-when-downgrade"
+                            />
+                        </div>
+
+                        {/* Branch Info Footer */}
+                        <div className="p-4 border-t border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800">
+                            <div className="flex items-center justify-between gap-4">
+                                <div className="flex-1">
+                                    <div className="flex items-center gap-3 text-xs mb-2">
+                                        <div className="flex items-center gap-1 text-text-muted">
+                                            <Clock className="w-3.5 h-3.5" />
+                                            <span>{viewingBranch.openingHours} - {viewingBranch.closingHours}</span>
+                                        </div>
+                                        <span className={`px-2 py-1 rounded-full font-medium ${getStatusColor(viewingBranch.status)}`}>
+                                            {viewingBranch.status}
+                                        </span>
+                                    </div>
+                                    <p className="text-xs text-text-muted">
+                                        Estimasi pickup: <span className="font-medium text-text-primary">{viewingBranch.estimatedPickupTime}</span>
+                                    </p>
+                                </div>
+                                <button
+                                    onClick={() => handleSelectBranch(viewingBranch)}
+                                    className="px-6 py-2 bg-accent text-white rounded-lg font-medium hover:opacity-90 transition-opacity text-sm"
+                                >
+                                    {selectedBranch?.id === viewingBranch.id ? 'Terpilih' : 'Pilih Cabang'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    /* Branch List View */
+                    <>
+                        {/* Use My Location Button */}
+                        <div className="px-6 pt-4">
+                            <button className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-xl hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors font-medium">
+                                <Navigation className="w-5 h-5" />
+                                Gunakan Lokasi Saya
+                            </button>
+                        </div>
+
+                        {/* Search */}
+                        <div className="px-6 pt-4">
+                            <div className="relative">
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-text-muted" />
+                                <input
+                                    type="text"
+                                    placeholder="Cari cabang, area, atau mall..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="w-full pl-10 pr-4 py-3 bg-neutral-50 dark:bg-neutral-700 border border-neutral-200 dark:border-neutral-600 rounded-xl text-text-primary placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Branch List */}
+                        <div className="flex-1 overflow-y-auto px-6 py-4 custom-scrollbar">
+                            {loading ? (
+                                <div className="text-center py-12 text-text-muted">Memuat cabang...</div>
+                            ) : filteredBranches.length === 0 ? (
+                                <div className="text-center py-12 text-text-muted">Tidak ada cabang ditemukan</div>
+                            ) : (
+                                <div className="space-y-6">
+                                    {Object.entries(groupedBranches).map(([area, areaBranches]: [string, Branch[]]) => (
+                                        <div key={area}>
+                                            <h3 className="text-sm font-semibold text-text-muted uppercase tracking-wide mb-3">{area}</h3>
+                                            <div className="space-y-2">
+                                                {areaBranches.map((branch) => (
+                                                    <div
+                                                        key={branch.id}
+                                                        className={`w-full text-left p-4 rounded-xl border-2 transition-all ${selectedBranch?.id === branch.id
+                                                            ? 'border-accent bg-blue-50 dark:bg-blue-900/20'
+                                                            : 'border-neutral-200 dark:border-neutral-700'
+                                                            }`}
+                                                    >
+                                                        <div className="flex items-start justify-between gap-3">
+                                                            <div className="flex-1">
+                                                                <div className="flex items-center gap-2 mb-1">
+                                                                    <MapPin className="w-4 h-4 text-accent flex-shrink-0" />
+                                                                    <h4 className="font-semibold text-text-primary">{branch.name}</h4>
+                                                                </div>
+                                                                <p className="text-sm text-text-muted mb-2">{branch.address}</p>
+                                                                <div className="flex items-center gap-3 text-xs mb-2">
+                                                                    <div className="flex items-center gap-1 text-text-muted">
+                                                                        <Clock className="w-3.5 h-3.5" />
+                                                                        <span>{branch.openingHours} - {branch.closingHours}</span>
+                                                                    </div>
+                                                                    <span className={`px-2 py-1 rounded-full font-medium ${getStatusColor(branch.status)}`}>
+                                                                        {branch.status}
+                                                                    </span>
+                                                                </div>
+                                                                <p className="text-xs text-text-muted mb-3">
+                                                                    Estimasi pickup: <span className="font-medium text-text-primary">{branch.estimatedPickupTime}</span>
+                                                                </p>
+
+                                                                {/* Action Buttons */}
+                                                                <div className="flex gap-2">
+                                                                    <button
+                                                                        onClick={() => handleSelectBranch(branch)}
+                                                                        className="flex-1 px-4 py-2 bg-accent text-white rounded-lg font-medium hover:opacity-90 transition-opacity text-sm"
+                                                                    >
+                                                                        {selectedBranch?.id === branch.id ? 'Terpilih' : 'Pilih Cabang'}
+                                                                    </button>
+                                                                    <button
+                                                                        onClick={() => handleViewMap(branch)}
+                                                                        className="px-4 py-2 bg-neutral-100 dark:bg-neutral-700 text-text-primary rounded-lg font-medium hover:bg-neutral-200 dark:hover:bg-neutral-600 transition-colors text-sm flex items-center gap-2"
+                                                                    >
+                                                                        <MapPin className="w-4 h-4" />
+                                                                        Lihat Peta
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </>
+                )}
+            </div>
+        </div>
+    );
+
+    return ReactDOM.createPortal(modalContent, document.body);
+};
+
+export default LocationModal;
