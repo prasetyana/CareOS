@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import { Link } from "react-router-dom";
 import { useHomepageContent } from '@core/hooks/useHomepageContent';
 import { useToast } from '@core/hooks/useToast';
+import { useTenantParam } from '@core/hooks/useTenantParam';
 import { Section } from '@core/types/homepage';
 import ToggleSwitch from '@ui/ToggleSwitch';
 import SkeletonLoader from '@ui/SkeletonLoader';
@@ -24,6 +25,7 @@ const sectionTypeToName: Record<string, string> = {
 const KustomisasiHomepage: React.FC = () => {
     const { config, loading, updateFullConfig } = useHomepageContent();
     const { addToast } = useToast();
+    const { withTenant } = useTenantParam();
     const [draggedItemIndex, setDraggedItemIndex] = useState<number | null>(null);
 
     // FIX: Use `updateFullConfig` to modify the top-level `enabled` property of a section.
@@ -89,7 +91,7 @@ const KustomisasiHomepage: React.FC = () => {
                         </span>
                     </div>
                     <Link
-                        to={`/admin/tampilan/edit-header`}
+                        to={withTenant(`/admin/tampilan/edit-header`)}
                         className="p-2 rounded-full text-brand-secondary dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600"
                         aria-label="Edit Header"
                     >
@@ -123,7 +125,7 @@ const KustomisasiHomepage: React.FC = () => {
                                 onChange={(checked) => handleToggle(section.id, checked)}
                             />
                             <Link
-                                to={`/admin/tampilan/edit-section/${section.id}`}
+                                to={withTenant(`/admin/tampilan/edit-section/${section.id}`)}
                                 className="p-2 rounded-full text-brand-secondary dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600"
                                 aria-label={`Edit ${sectionTypeToName[section.type]}`}
                             >
@@ -142,7 +144,7 @@ const KustomisasiHomepage: React.FC = () => {
                         </span>
                     </div>
                     <Link
-                        to={`/admin/tampilan/edit-footer`}
+                        to={withTenant(`/admin/tampilan/edit-footer`)}
                         className="p-2 rounded-full text-brand-secondary dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600"
                         aria-label="Edit Footer"
                     >

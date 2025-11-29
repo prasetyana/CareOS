@@ -5,6 +5,7 @@ import React from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import { useHomepageContent } from '@core/hooks/useHomepageContent';
 import { useToast } from '@core/hooks/useToast';
+import { useTenantParam } from '@core/hooks/useTenantParam';
 import SkeletonLoader from '@ui/SkeletonLoader';
 import { ArrowLeft } from 'lucide-react';
 import FooterForm from '@modules/admin/components/editor-forms/FooterForm';
@@ -14,12 +15,13 @@ const EditFooterPage: React.FC = () => {
     const { config, loading, updateFooter } = useHomepageContent();
     const { addToast } = useToast();
     const navigate = useNavigate();
+    const { withTenant } = useTenantParam();
 
     const handleSubmit = async (newFooterConfig: Partial<FooterConfig>) => {
         try {
             await updateFooter(newFooterConfig);
             addToast('Footer berhasil diperbarui!', 'success');
-            navigate('/admin/tampilan');
+            navigate(withTenant('/admin/tampilan'));
         } catch (error) {
             addToast('Gagal memperbarui footer.', 'error');
         }
@@ -37,7 +39,7 @@ const EditFooterPage: React.FC = () => {
     return (
         <div>
             <div className="mb-6">
-                <Link to="/admin/tampilan" className="text-brand-primary hover:underline font-medium inline-flex items-center text-sm">
+                <Link to={withTenant("/admin/tampilan")} className="text-brand-primary hover:underline font-medium inline-flex items-center text-sm">
                     <ArrowLeft className="w-4 h-4 mr-2" />
                     Kembali ke Kustomisasi Homepage
                 </Link>

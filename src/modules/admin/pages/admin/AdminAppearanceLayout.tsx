@@ -1,14 +1,13 @@
-
-
 import React from 'react';
 // FIX: Re-typed import to fix "no exported member" errors.
 import { NavLink, Outlet } from "react-router-dom";
-import { LayoutTemplate, Palette } from 'lucide-react';
+import { LayoutTemplate, Palette, Paintbrush } from 'lucide-react';
 import { useTenantParam } from '@core/hooks/useTenantParam';
 
 const tampilanTabs = [
     { name: 'Kustomisasi Homepage', href: '/admin/tampilan', icon: LayoutTemplate, end: true },
-    { name: 'Tema & Warna', href: 'tema-warna', icon: Palette, end: false },
+    { name: 'Tema', href: 'tema', icon: Palette, end: false },
+    { name: 'Warna', href: 'warna', icon: Paintbrush, end: false },
 ];
 
 const AdminTampilanLayout: React.FC = () => {

@@ -1,4 +1,6 @@
 import React, { createContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import { TenantContext } from '../tenant/TenantContext';
+import { updateTenantLayout } from '../services/tenantService';
 
 type Theme = 'Garnet' | 'Sapphire' | 'Emerald' | 'Amethyst';
 type Mode = 'light' | 'dark';
@@ -80,22 +82,50 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     setMode(prevMode => (prevMode === 'light' ? 'dark' : 'light'));
   }, []);
 
+  // Import tenant context and service
+  // Import tenant context safely
+  const tenantContext = React.useContext(TenantContext);
+  const tenant = tenantContext?.tenant;
+
   const [layout, setLayoutState] = useState<string>(() => {
     try {
+      const searchParams = new URLSearchParams(window.location.search);
+      const previewLayout = searchParams.get('layout');
+      if (previewLayout) return previewLayout;
+
+      // Prioritize tenant layout if available
+      if (tenant?.layout) return tenant.layout;
+
       return window.localStorage.getItem('app-layout') || 'default';
     } catch (error) {
       return 'default';
     }
   });
 
-  const setLayout = useCallback((newLayout: string) => {
+  // Update layout when tenant data loads
+  useEffect(() => {
+    if (tenant?.layout) {
+      const searchParams = new URLSearchParams(window.location.search);
+      const previewLayout = searchParams.get('layout');
+      if (!previewLayout) {
+        setLayoutState(tenant.layout);
+      }
+    }
+  }, [tenant]);
+
+  const setLayout = useCallback(async (newLayout: string) => {
     try {
       window.localStorage.setItem('app-layout', newLayout);
+
+      // Update tenant layout in Supabase if tenant exists
+      if (tenant?.id) {
+        await updateTenantLayout(tenant.id, newLayout);
+      }
     } catch (error) {
-      console.error("Failed to save layout to localStorage", error);
+      console.error("Failed to save layout", error);
     }
     setLayoutState(newLayout);
-  }, []);
+  }, [tenant]);
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme, mode, toggleMode, layout, setLayout }}>

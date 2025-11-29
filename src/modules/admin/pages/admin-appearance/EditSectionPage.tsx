@@ -5,6 +5,7 @@ import React from 'react';
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useHomepageContent } from '@core/hooks/useHomepageContent';
 import { useToast } from '@core/hooks/useToast';
+import { useTenantParam } from '@core/hooks/useTenantParam';
 import SkeletonLoader from '@ui/SkeletonLoader';
 import { ArrowLeft } from 'lucide-react';
 
@@ -45,6 +46,7 @@ const EditSectionPage: React.FC = () => {
     const { config, loading, updateSection } = useHomepageContent();
     const { addToast } = useToast();
     const navigate = useNavigate();
+    const { withTenant } = useTenantParam();
 
     const section = config?.sections.find(s => s.id === sectionId);
 
@@ -53,7 +55,7 @@ const EditSectionPage: React.FC = () => {
         try {
             await updateSection(section.id, newProps);
             addToast('Section berhasil diperbarui!', 'success');
-            navigate('/admin/tampilan');
+            navigate(withTenant('/admin/tampilan'));
         } catch (error) {
             addToast('Gagal memperbarui section.', 'error');
         }
@@ -78,7 +80,7 @@ const EditSectionPage: React.FC = () => {
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 text-center">
                 <h2 className="text-xl font-bold text-brand-dark dark:text-gray-200">Section Tidak Ditemukan</h2>
                 <p className="text-brand-secondary dark:text-gray-400 mt-2 mb-6">Section yang Anda coba edit tidak ada.</p>
-                <Link to="/admin/tampilan" className="text-brand-primary hover:underline font-medium inline-flex items-center">
+                <Link to={withTenant("/admin/tampilan")} className="text-brand-primary hover:underline font-medium inline-flex items-center">
                     <ArrowLeft className="w-4 h-4 mr-2" />
                     Kembali ke Kustomisasi
                 </Link>
@@ -89,7 +91,7 @@ const EditSectionPage: React.FC = () => {
     return (
         <div>
             <div className="mb-6">
-                <Link to="/admin/tampilan" className="text-brand-primary hover:underline font-medium inline-flex items-center text-sm">
+                <Link to={withTenant("/admin/tampilan")} className="text-brand-primary hover:underline font-medium inline-flex items-center text-sm">
                     <ArrowLeft className="w-4 h-4 mr-2" />
                     Kembali ke Kustomisasi Homepage
                 </Link>

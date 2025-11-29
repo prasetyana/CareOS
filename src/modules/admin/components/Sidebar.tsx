@@ -74,7 +74,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, toggleSidebar }) => {
         <div className={`flex items-center mb-8 transition-all duration-300 ${isCollapsedProp ? 'justify-center' : 'justify-between'}`}>
           <div className={`flex items-center transition-all duration-300 ${isCollapsedProp ? '' : 'justify-between w-full'}`}>
             <Link
-              to="/home"
+              to={withTenant("/home")}
               className={`flex items-center gap-3 overflow-hidden whitespace-nowrap transition-all duration-200 ${isCollapsedProp ? 'w-0 opacity-0' : 'w-auto opacity-100'}`}
             >
               <img src={logoSrc} alt={businessName} className="h-8 w-8 text-text-primary dark:text-gray-100 flex-shrink-0 object-cover rounded-full" />

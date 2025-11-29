@@ -358,3 +358,25 @@ export async function logActivity(data: {
         return { success: false }
     }
 }
+
+/**
+ * Update tenant layout preference
+ */
+export async function updateTenantLayout(tenantId: string, layout: string) {
+    try {
+        const { error } = await supabase
+            .from('tenants')
+            .update({ layout })
+            .eq('id', tenantId)
+
+        if (error) throw error
+
+        return { success: true }
+    } catch (error: any) {
+        console.error('Error updating tenant layout:', error)
+        return {
+            success: false,
+            error: error.message || 'Failed to update layout'
+        }
+    }
+}

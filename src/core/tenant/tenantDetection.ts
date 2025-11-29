@@ -12,6 +12,7 @@ export interface TenantContext {
     email?: string
     phone?: string
     website?: string
+    layout?: string
 
     // Domain configuration
     domainType?: 'subdomain' | 'custom'
@@ -97,7 +98,7 @@ export async function detectTenantFromDomain(): Promise<TenantContext | null> {
             const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
             const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
-            const response = await fetch(`${supabaseUrl}/rest/v1/tenants?slug=eq.${tenantIdentifier}&select=id,slug,business_name,logo_url,primary_color,secondary_color,font_family,description,email,phone,website,operating_hours`, {
+            const response = await fetch(`${supabaseUrl}/rest/v1/tenants?slug=eq.${tenantIdentifier}&select=id,slug,business_name,logo_url,primary_color,secondary_color,font_family,description,email,phone,website,operating_hours,layout`, {
                 headers: {
                     'apikey': supabaseAnonKey,
                     'Authorization': `Bearer ${supabaseAnonKey}`
@@ -129,7 +130,8 @@ export async function detectTenantFromDomain(): Promise<TenantContext | null> {
                     phone: tenantData.phone,
                     website: tenantData.website,
                     // Operating hours from DB or default
-                    operatingHours: tenantData.operating_hours || getDefaultOperatingHours()
+                    operatingHours: tenantData.operating_hours || getDefaultOperatingHours(),
+                    layout: tenantData.layout || 'default'
                 }
             } else {
                 console.warn('⚠️ Tenant not found in database, using mock tenant')
@@ -162,7 +164,9 @@ export async function detectTenantFromDomain(): Promise<TenantContext | null> {
             email,
             phone,
             website,
-            operating_hours
+            website,
+            operating_hours,
+            layout
           )
         `)
             .eq('domain', domain)
@@ -190,7 +194,8 @@ export async function detectTenantFromDomain(): Promise<TenantContext | null> {
             email: tenant.email,
             phone: tenant.phone,
             website: tenant.website,
-            operatingHours: tenant.operating_hours || getDefaultOperatingHours()
+            operatingHours: tenant.operating_hours || getDefaultOperatingHours(),
+            layout: tenant.layout || 'default'
         }
     } catch (error) {
         console.error('❌ Error in production tenant detection:', error)
@@ -243,7 +248,8 @@ function getMockTenant(slug: string): TenantContext {
         province: 'DKI Jakarta',
         postalCode: '12190',
         latitude: '-6.225014',
-        longitude: '106.809715'
+        longitude: '106.809715',
+        layout: 'default'
     }
 }
 
