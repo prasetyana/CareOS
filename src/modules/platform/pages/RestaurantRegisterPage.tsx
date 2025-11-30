@@ -31,6 +31,7 @@ interface InputFieldProps {
     rightElement?: React.ReactNode
     icon?: React.ElementType
     tooltip?: string
+    focusColor?: 'orange' | 'blue'
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -48,7 +49,8 @@ const InputField: React.FC<InputFieldProps> = ({
     minLength,
     rightElement,
     icon: Icon,
-    tooltip
+    tooltip,
+    focusColor = 'orange'
 }) => {
     const [showPassword, setShowPassword] = useState(false)
     const isPassword = type === 'password'
@@ -72,7 +74,7 @@ const InputField: React.FC<InputFieldProps> = ({
             </div>
             <div className="relative group">
                 {Icon && (
-                    <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-orange-500 transition-colors">
+                    <div className={`absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 transition-colors ${focusColor === 'blue' ? 'group-focus-within:text-blue-500' : 'group-focus-within:text-orange-500'}`}>
                         <Icon className="w-4 h-4" />
                     </div>
                 )}
@@ -85,10 +87,13 @@ const InputField: React.FC<InputFieldProps> = ({
                     placeholder={placeholder}
                     required={required}
                     minLength={minLength}
-                    className={`block w-full ${Icon ? 'pl-8' : 'pl-3'} pr-8 py-2.5 bg-gray-50/50 hover:bg-white border-[1.5px] rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-500/10 transition-all duration-200 ${touched && error
+                    className={`block w-full ${Icon ? 'pl-8' : 'pl-3'} pr-8 py-2.5 bg-gray-50/50 hover:bg-white border-[1.5px] rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus-visible:outline-none focus:ring-4 transition-all duration-200 ${touched && error
                         ? 'border-red-300 focus:border-red-500 bg-red-50/30'
-                        : 'border-gray-200 focus:border-orange-500'
+                        : focusColor === 'blue'
+                            ? 'border-gray-200 focus:border-blue-500 focus:ring-blue-500/10'
+                            : 'border-gray-200 focus:border-orange-500 focus:ring-orange-500/10'
                         }`}
+                    style={{ outline: '0', outlineOffset: '0', boxShadow: 'none' }}
                 />
                 <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-2">
                     {rightElement}
@@ -151,6 +156,9 @@ const RestaurantRegisterPage: React.FC = () => {
 
     // Preview State
     const [previewDevice, setPreviewDevice] = useState<'desktop' | 'mobile'>('desktop')
+
+    // Description Textarea Ref
+    const descriptionTextareaRef = React.useRef<HTMLTextAreaElement>(null)
 
     // Auto-generate slug from business name if not manually touched
     useEffect(() => {
@@ -300,6 +308,13 @@ const RestaurantRegisterPage: React.FC = () => {
                 delete newErrors[name]
                 setErrors(newErrors)
             }
+        }
+
+        // Auto-resize textarea for business description
+        if (name === 'businessDescription' && descriptionTextareaRef.current) {
+            const textarea = descriptionTextareaRef.current
+            textarea.style.height = 'auto'
+            textarea.style.height = `${textarea.scrollHeight}px`
         }
     }
 
@@ -534,6 +549,7 @@ const RestaurantRegisterPage: React.FC = () => {
                                         error={errors.businessName}
                                         touched={touched.businessName}
                                         icon={Store}
+                                        focusColor="blue"
                                     />
 
                                     <div className="space-y-1.5">
@@ -551,15 +567,16 @@ const RestaurantRegisterPage: React.FC = () => {
                                                     setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))
                                                     setIsSlugTouched(true)
                                                 }}
-                                                className={`block w-full pl-8 pr-24 py-2.5 bg-gray-50/50 hover:bg-white border-[1.5px] rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-500/10 transition-all duration-200 ${slugError
+                                                className={`block w-full pl-8 pr-24 py-2.5 bg-gray-50/50 hover:bg-white border-[1.5px] rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus-visible:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all duration-200 ${slugError
                                                     ? 'border-red-300 focus:border-red-500 bg-red-50/30'
-                                                    : 'border-gray-200 focus:border-orange-500'
+                                                    : 'border-gray-200 focus:border-blue-500'
                                                     }`}
                                                 placeholder="nama-restoran"
+                                                style={{ outline: '0', outlineOffset: '0', boxShadow: 'none' }}
                                             />
                                             <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-2">
                                                 <span className="text-gray-400 text-[10px] font-medium hidden sm:inline bg-gray-100 px-1.5 py-0.5 rounded">.careos.cloud</span>
-                                                {isCheckingSlug ? <Loader2 className="w-4 h-4 animate-spin text-orange-500" /> :
+                                                {isCheckingSlug ? <Loader2 className="w-4 h-4 animate-spin text-blue-500" /> :
                                                     slugAvailable === true ? <CheckCircle2 className="w-4 h-4 text-green-500" /> :
                                                         slugAvailable === false ? <XCircle className="w-4 h-4 text-red-500" /> :
                                                             <button
@@ -596,7 +613,7 @@ const RestaurantRegisterPage: React.FC = () => {
                                                     type="button"
                                                     onClick={() => setFormData(prev => ({ ...prev, primaryColor: preset.value }))}
                                                     className={`w-7 h-7 rounded-full border-2 transition-all duration-200 shadow-sm hover:scale-110 ${formData.primaryColor === preset.value
-                                                        ? 'border-gray-900 scale-110 ring-2 ring-gray-200'
+                                                        ? 'border-blue-600 scale-110 ring-2 ring-blue-200'
                                                         : 'border-transparent hover:border-gray-200'
                                                         }`}
                                                     style={{ backgroundColor: preset.value }}
@@ -623,12 +640,13 @@ const RestaurantRegisterPage: React.FC = () => {
                                             Deskripsi Singkat
                                         </label>
                                         <textarea
+                                            ref={descriptionTextareaRef}
                                             name="businessDescription"
                                             value={formData.businessDescription}
                                             onChange={handleChange}
-                                            rows={2}
-                                            className="block w-full px-3 py-2.5 bg-gray-50/50 hover:bg-white border-[1.5px] border-gray-200 rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all resize-none"
+                                            className="block w-full px-3 py-2.5 bg-gray-50/50 hover:bg-white border-[1.5px] border-gray-200 rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus-visible:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 transition-all resize-none overflow-hidden"
                                             placeholder="Ceritakan sedikit tentang restoran Anda..."
+                                            style={{ outline: '0', outlineOffset: '0', boxShadow: 'none', minHeight: '56px' }}
                                         />
                                     </div>
                                 </div>
@@ -648,7 +666,7 @@ const RestaurantRegisterPage: React.FC = () => {
                                         <Check className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity" strokeWidth={3} />
                                     </div>
                                     <span className="text-xs text-gray-500 group-hover:text-gray-700 transition-colors leading-relaxed">
-                                        Dengan membuat akun, saya menyetujui <a href="#" className="text-orange-600 hover:underline font-bold">Syarat & Ketentuan</a> serta <a href="#" className="text-orange-600 hover:underline font-bold">Kebijakan Privasi</a> DineOS.
+                                        Dengan membuat akun, saya menyetujui <a href="#" className="text-orange-600 hover:underline font-bold">Syarat & Ketentuan</a> serta <a href="#" className="text-orange-600 hover:underline font-bold">Kebijakan Privasi</a> CareOS.
                                     </span>
                                 </label>
                             </div>
