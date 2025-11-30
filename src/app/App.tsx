@@ -36,7 +36,7 @@ import OwnerAccount from '@modules/admin/pages/admin-settings/OwnerAccount';
 import GeneralSettings from '@modules/admin/pages/admin-settings/GeneralSettings';
 import BillingSubscription from '@modules/admin/pages/admin-settings/BillingSubscription';
 import AdminAppearanceLayout from '@modules/admin/pages/admin/AdminAppearanceLayout';
-import HomepageCustomization from '@modules/admin/pages/admin-appearance/HomepageCustomization';
+
 import EditSectionPage from '@modules/admin/pages/admin-appearance/EditSectionPage';
 import Themes from '@modules/admin/pages/admin-appearance/Themes';
 import ThemeDetailsPage from '@modules/admin/pages/admin-appearance/ThemeDetailsPage';
@@ -66,7 +66,6 @@ import { LocationProvider } from '@core/contexts/LocationContext';
 import { FavoritesProvider } from '@core/contexts/FavoritesContext';
 import { TenantProvider, TenantConfig } from '@core/tenant';
 import RestaurantRegisterPage from '@modules/platform/pages/RestaurantRegisterPage';
-import OnboardingWizardPage from '@modules/platform/pages/OnboardingWizardPage';
 import AdminStaffPage from '@modules/admin/pages/admin-staff/AdminStaffPage';
 import EmailSettings from '@modules/admin/pages/admin-settings/EmailSettings';
 import DomainSettings from '@modules/admin/pages/admin-settings/DomainSettings';
@@ -76,6 +75,8 @@ import ThemeSwitcher from '../modules/storefront/themes/ThemeSwitcher';
 import DefaultTheme from '@modules/storefront/themes/default/DefaultTheme';
 import PlatformLandingPage from '@modules/platform/pages/PlatformLandingPage';
 import ThemePreviewPanel from '@modules/common/components/ThemePreviewPanel';
+import CheckoutPage from '@modules/platform/pages/CheckoutPage';
+import PaymentSuccessPage from '@modules/platform/pages/PaymentSuccessPage';
 const App: React.FC = () => {
   return (
     <BrowserRouter>
@@ -93,8 +94,9 @@ const App: React.FC = () => {
                             <ThemePreviewPanel />
                             <Routes>
                               {/* Platform routes (NO tenant context needed) */}
-                              <Route path="/register" element={<RestaurantRegisterPage />} />
-                              <Route path="/onboarding" element={<OnboardingWizardPage />} />
+                              <Route path="/start" element={<RestaurantRegisterPage />} />
+                              <Route path="/start/payment" element={<CheckoutPage />} />
+                              <Route path="/start/success" element={<PaymentSuccessPage />} />
 
                               {/* All other routes need tenant context (including login) */}
                               <Route path="/*" element={
@@ -181,8 +183,7 @@ const App: React.FC = () => {
                                               </Route>
 
                                               <Route path="tampilan" element={<AdminAppearanceLayout />}>
-                                                <Route index element={<PreserveParamsNavigate to="kustomisasi-homepage" replace />} />
-                                                <Route path="kustomisasi-homepage" element={<HomepageCustomization />} />
+                                                <Route index element={<PreserveParamsNavigate to="tema" replace />} />
                                                 <Route path="edit-header" element={<EditHeaderPage />} />
                                                 <Route path="edit-section/:sectionId" element={<EditSectionPage />} />
                                                 <Route path="edit-footer" element={<EditFooterPage />} />

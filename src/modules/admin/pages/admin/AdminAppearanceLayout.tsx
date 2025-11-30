@@ -5,7 +5,7 @@ import { LayoutTemplate, Palette, Paintbrush } from 'lucide-react';
 import { useTenantParam } from '@core/hooks/useTenantParam';
 
 const tampilanTabs = [
-    { name: 'Kustomisasi Homepage', href: '/admin/tampilan', icon: LayoutTemplate, end: true },
+
     { name: 'Tema', href: 'tema', icon: Palette, end: false },
     { name: 'Warna', href: 'warna', icon: Paintbrush, end: false },
 ];

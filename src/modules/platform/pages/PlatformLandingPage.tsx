@@ -151,7 +151,7 @@ const PlatformLandingPage: React.FC = () => {
                                 Lihat Demo
                             </button>
                             <button
-                                onClick={() => navigate('/register')}
+                                onClick={() => navigate('/start')}
                                 className="px-4 py-1.5 bg-[#1D1D1F] text-white text-[13px] font-medium rounded-full hover:bg-black transition-all shadow-sm hover:shadow-md active:scale-95 transform duration-100"
                             >
                                 Mulai Sekarang
@@ -340,7 +340,7 @@ const PlatformLandingPage: React.FC = () => {
                                 </ul>
 
                                 <button
-                                    onClick={() => navigate('/register')}
+                                    onClick={() => navigate('/start')}
                                     className={`w-full py-3.5 rounded-full font-medium transition-all active:scale-95 text-[15px] ${tier.highlighted
                                         ? 'bg-orange-500 text-white hover:bg-orange-600'
                                         : 'bg-white text-[#1D1D1F] hover:bg-[#F5F5F7]'

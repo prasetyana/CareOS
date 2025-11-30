@@ -16,6 +16,7 @@ export interface RestaurantRegistrationData {
     primaryColor?: string
     secondaryColor?: string
     logoUrl?: string
+    slug?: string
 }
 
 export interface OnboardingData {
@@ -36,7 +37,10 @@ export interface OnboardingData {
     branchCity: string
     branchArea?: string
     openingHours: string
-    closingHours: string
+    city?: string
+    province?: string
+    postal_code?: string
+    two_factor_enabled?: boolean
 }
 
 export interface UserProfile {
@@ -54,6 +58,7 @@ export interface UserProfile {
     province?: string
     postal_code?: string
     two_factor_enabled?: boolean
+    tenant_id?: string
 }
 
 export interface ActivityLog {

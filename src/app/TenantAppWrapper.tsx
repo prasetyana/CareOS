@@ -55,8 +55,8 @@ export const TenantAppWrapper: React.FC<TenantAppWrapperProps> = ({ children }) 
                         console.log('Constructing default config for:', resolution.tenantId);
 
                         // Robust name detection
-                        let tenantName = 'DineOS Staging';
-                        if (resolution.tenantId === 'platform') tenantName = 'DineOS Platform';
+                        let tenantName = 'CareOS Staging';
+                        if (resolution.tenantId === 'platform') tenantName = 'CareOS Platform';
                         else if (resolution.tenantId === 'demo' || resolution.tenantId.includes('demo')) tenantName = 'Demo Restaurant';
 
                         console.log('Determined tenant name:', tenantName);

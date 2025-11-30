@@ -4,7 +4,7 @@
  */
 
 export const APP_CONFIG = {
-    name: 'DineOS',
+    name: 'CareOS',
     version: '0.1.4',
     description: 'Multi-tenant Restaurant Management SaaS',
 } as const;
@@ -31,7 +31,7 @@ export const ROUTES = {
     // Public routes
     home: '/',
     login: '/login',
-    register: '/register',
+    register: '/start',
     contact: '/contact',
 
     // Customer routes

@@ -13,7 +13,6 @@ import {
 import { logoDataUri } from '@ui/Logo';
 import { useLiveChat } from '@core/contexts/LiveChatContext';
 import AgentStatusControl from './AgentStatusControl';
-import TeamStatusList from './TeamStatusList';
 
 interface CsSidebarProps {
   isCollapsed: boolean;
@@ -47,7 +46,7 @@ const CsSidebar: React.FC<CsSidebarProps> = ({ isCollapsed, toggleSidebar }) => 
 
   const SidebarContent = ({ isCollapsedProp = false }) => (
     <div
-      className={`bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl shadow-lg p-4 flex flex-col justify-between border border-white/20 dark:border-gray-700/50 h-full
+      className={`bg-white/70 dark:bg-gray-800/70 backdrop-blur-xl shadow-lg p-4 flex flex-col justify-between border border-white/20 dark:border-gray-700/50 h-full rounded-3xl
         ${isCollapsedProp ? 'w-20' : 'w-64'}
       `}
     >
@@ -101,11 +100,6 @@ const CsSidebar: React.FC<CsSidebarProps> = ({ isCollapsed, toggleSidebar }) => 
           ))}
         </nav>
 
-        {!isCollapsedProp && (
-          <div className="mt-6 border-t border-black/5 dark:border-white/10 pt-4">
-            <TeamStatusList />
-          </div>
-        )}
       </div>
 
       {user && (
@@ -116,7 +110,7 @@ const CsSidebar: React.FC<CsSidebarProps> = ({ isCollapsed, toggleSidebar }) => 
             </div>
           )}
           <div className={`flex items-center transition-all duration-300 ${isCollapsed ? 'justify-center' : 'justify-between gap-3 px-3 pb-2'}`}>
-            <div className="flex items-center gap-3 overflow-hidden">
+            <div className={`flex items-center overflow-hidden ${isCollapsed ? '' : 'gap-3'}`}>
               <div className="w-9 h-9 rounded-full bg-accent flex items-center justify-center font-bold text-white flex-shrink-0 overflow-hidden">
                 {user.avatarUrl ? (
                   <img src={user.avatarUrl} alt={user.name || user.email} className="w-full h-full object-cover" />

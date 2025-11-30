@@ -1,7 +1,7 @@
 import { supabase } from '../supabase/supabase'
-import { RestaurantRegistrationData, OnboardingData, UserProfile, ActivityLog } from '../types/tenant'
+import { RestaurantRegistrationData, UserProfile, ActivityLog } from '../types/tenant'
 
-export type { RestaurantRegistrationData, OnboardingData, UserProfile, ActivityLog }
+export type { RestaurantRegistrationData, UserProfile, ActivityLog }
 
 /**
  * Register a new restaurant owner and create their tenant
@@ -16,6 +16,7 @@ export async function registerRestaurantOwner(data: RestaurantRegistrationData) 
                 data: {
                     full_name: data.ownerName,
                     phone: data.ownerPhone,
+                    username: data.username
                 }
             }
         })
@@ -24,7 +25,7 @@ export async function registerRestaurantOwner(data: RestaurantRegistrationData) 
         if (!authData.user) throw new Error('Failed to create user')
 
         // Step 2: Create tenant
-        const slug = generateSlugFromBusinessName(data.businessName)
+        const slug = data.slug || generateSlugFromBusinessName(data.businessName)
 
         const { data: tenantData, error: tenantError } = await supabase
             .from('tenants')
@@ -35,9 +36,9 @@ export async function registerRestaurantOwner(data: RestaurantRegistrationData) 
                 email: data.businessEmail,
                 phone: data.businessPhone,
                 primary_color: data.primaryColor || '#FF6B35',
-                secondary_color: data.secondaryColor || '#004E89',
-                subscription_tier: 'trial',
-                status: 'active'
+                secondary_color: '#004E89',
+                subscription_tier: 'none',
+                status: 'pending_payment'
             })
             .select()
             .single()
@@ -91,57 +92,31 @@ export async function registerRestaurantOwner(data: RestaurantRegistrationData) 
 }
 
 /**
- * Complete onboarding wizard
+ * Activate tenant subscription after payment
  */
-export async function completeOnboarding(tenantId: string, data: Partial<OnboardingData>) {
+export async function activateTenantSubscription(tenantId: string, plan: string) {
     try {
-        // Update tenant with branding
-        if (data.primaryColor || data.secondaryColor || data.fontFamily) {
-            const { error: tenantError } = await supabase
-                .from('tenants')
-                .update({
-                    primary_color: data.primaryColor,
-                    secondary_color: data.secondaryColor,
-                    font_family: data.fontFamily,
-                    logo_url: data.logoUrl
-                })
-                .eq('id', tenantId)
+        const { error } = await supabase
+            .from('tenants')
+            .update({
+                subscription_tier: plan === 'yearly' ? 'pro_yearly' : 'pro_monthly',
+                status: 'active'
+            })
+            .eq('id', tenantId)
 
-            if (tenantError) throw tenantError
-        }
-
-        // Create first branch if provided
-        if (data.branchName && data.branchAddress) {
-            const { error: branchError } = await supabase
-                .from('branches')
-                .insert({
-                    tenant_id: tenantId,
-                    name: data.branchName,
-                    address: data.branchAddress,
-                    city: data.branchCity || '',
-                    area: data.branchArea,
-                    opening_hours: data.openingHours || '09:00',
-                    closing_hours: data.closingHours || '22:00',
-                    status: 'open'
-                })
-
-            if (branchError) throw branchError
-        }
+        if (error) throw error
 
         return { success: true }
     } catch (error: any) {
-        console.error('Onboarding error:', error)
-        return {
-            success: false,
-            error: error.message || 'Onboarding failed'
-        }
+        console.error('Error activating subscription:', error)
+        return { success: false, error: error.message }
     }
 }
 
 /**
  * Generate URL-friendly slug from business name
  */
-function generateSlugFromBusinessName(businessName: string): string {
+export function generateSlugFromBusinessName(businessName: string): string {
     return businessName
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
@@ -157,10 +132,61 @@ export async function checkSlugAvailability(slug: string): Promise<boolean> {
         .from('tenants')
         .select('id')
         .eq('slug', slug)
-        .single()
+        .maybeSingle()
 
-    return !data && !error
+    if (error) {
+        console.error('Error checking slug availability:', error)
+        return false // Assume unavailable on error to be safe
+    }
+
+    return !data
 }
+
+/**
+ * Check if email is available
+ */
+export async function checkEmailAvailability(email: string): Promise<boolean> {
+    // Check in profiles (for registered users)
+    // Note: We can't directly check auth.users from client, so we check profiles table
+    // which should have a record for every user.
+    const { data, error } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('email', email) // Assuming profiles has email column, if not we might need another way or rely on auth error
+        .maybeSingle()
+
+    // If profiles doesn't have email, we might need to rely on the registration error from Supabase Auth
+    // But usually for pre-validation we might need an edge function or a public table.
+    // However, let's check if we can query tenants email too.
+
+    const { data: tenantData } = await supabase
+        .from('tenants')
+        .select('id')
+        .eq('email', email)
+        .maybeSingle()
+
+    return !data && !tenantData
+}
+
+/**
+ * Check if phone is available
+ */
+export async function checkPhoneAvailability(phone: string): Promise<boolean> {
+    const { data, error } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('phone', phone)
+        .maybeSingle()
+
+    const { data: tenantData } = await supabase
+        .from('tenants')
+        .select('id')
+        .eq('phone', phone)
+        .maybeSingle()
+
+    return !data && !tenantData
+}
+
 
 /**
  * Update tenant profile information
