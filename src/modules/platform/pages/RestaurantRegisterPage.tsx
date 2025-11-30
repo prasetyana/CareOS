@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { registerRestaurantOwner, checkSlugAvailability, generateSlugFromBusinessName, checkEmailAvailability, checkPhoneAvailability } from '@core/services/tenantService'
 import { ArrowRight, Loader2, Check, Eye, EyeOff, User, Store, Sparkles, AlertCircle, CheckCircle2, XCircle, Smartphone, Mail, Lock, Link as LinkIcon, RefreshCw, Info, LayoutTemplate, Monitor, Smartphone as MobileIcon, Palette } from 'lucide-react'
+import Modal from '@ui/Modal'
 
 // Color Presets
 const COLOR_PRESETS = [
@@ -63,9 +64,9 @@ const InputField: React.FC<InputFieldProps> = ({
                     {label} {required && <span className="text-orange-500">*</span>}
                 </label>
                 {tooltip && (
-                    <div className="group relative">
+                    <div className="group/tooltip relative">
                         <Info className="w-3 h-3 text-gray-400 cursor-help" />
-                        <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 p-2 bg-gray-900 text-white text-[10px] rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 shadow-xl">
+                        <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 p-2 bg-gray-900 text-white text-[10px] rounded-lg opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-10 shadow-xl">
                             {tooltip}
                             <div className="absolute left-1/2 -translate-x-1/2 top-full border-4 border-transparent border-t-gray-900"></div>
                         </div>
@@ -147,6 +148,8 @@ const RestaurantRegisterPage: React.FC = () => {
     const [isCheckingSlug, setIsCheckingSlug] = useState(false)
     const [slugAvailable, setSlugAvailable] = useState<boolean | null>(null)
     const [slugError, setSlugError] = useState<string | null>(null)
+    const [showTerms, setShowTerms] = useState(false)
+    const [showPrivacy, setShowPrivacy] = useState(false)
 
     // Email & Phone Check State
     const [isCheckingEmail, setIsCheckingEmail] = useState(false)
@@ -428,7 +431,7 @@ const RestaurantRegisterPage: React.FC = () => {
                         <form id="registration-form" onSubmit={handleSubmit} className="space-y-5">
                             {/* Owner Section */}
                             <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 space-y-4 relative overflow-hidden group hover:shadow-md transition-shadow duration-300">
-                                <div className="absolute top-0 left-0 w-1 h-full bg-orange-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                <div className="absolute -inset-[1px] border-l-4 border-orange-500 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
                                 <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider flex items-center gap-2 border-b border-gray-100 pb-2">
                                     <div className="p-1 bg-orange-50 rounded-md text-orange-600">
                                         <User className="w-3.5 h-3.5" />
@@ -436,19 +439,19 @@ const RestaurantRegisterPage: React.FC = () => {
                                     Data Pemilik
                                 </h3>
                                 <div className="space-y-3">
-                                    <InputField
-                                        label="Nama Lengkap"
-                                        name="ownerName"
-                                        value={formData.ownerName}
-                                        onChange={handleChange}
-                                        onBlur={() => handleBlur('ownerName')}
-                                        placeholder="Contoh: Budi Santoso"
-                                        required
-                                        error={errors.ownerName}
-                                        touched={touched.ownerName}
-                                        icon={User}
-                                    />
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        <InputField
+                                            label="Nama Lengkap"
+                                            name="ownerName"
+                                            value={formData.ownerName}
+                                            onChange={handleChange}
+                                            onBlur={() => handleBlur('ownerName')}
+                                            placeholder="Contoh: Budi Santoso"
+                                            required
+                                            error={errors.ownerName}
+                                            touched={touched.ownerName}
+                                            icon={User}
+                                        />
                                         <InputField
                                             label="Email"
                                             name="ownerEmail"
@@ -467,6 +470,8 @@ const RestaurantRegisterPage: React.FC = () => {
                                                         emailAvailable === false ? <XCircle className="w-4 h-4 text-red-500" /> : null
                                             }
                                         />
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                         <InputField
                                             label="WhatsApp"
                                             name="ownerPhone"
@@ -485,52 +490,54 @@ const RestaurantRegisterPage: React.FC = () => {
                                                         phoneAvailable === false ? <XCircle className="w-4 h-4 text-red-500" /> : null
                                             }
                                         />
-                                    </div>
-                                    <InputField
-                                        label="Kata Sandi"
-                                        name="ownerPassword"
-                                        type="password"
-                                        value={formData.ownerPassword}
-                                        onChange={handleChange}
-                                        onBlur={() => handleBlur('ownerPassword')}
-                                        placeholder="••••••••"
-                                        required
-                                        minLength={8}
-                                        error={errors.ownerPassword}
-                                        touched={touched.ownerPassword}
-                                        icon={Lock}
-                                        tooltip="Minimal 8 karakter, kombinasi huruf dan angka"
-                                    />
-                                    {formData.ownerPassword && (
-                                        <div className="ml-1">
-                                            <div className="flex gap-1 h-1 mb-1 overflow-hidden rounded-full bg-gray-100">
-                                                {[1, 2, 3].map((level) => {
-                                                    const strength = (() => {
-                                                        if (formData.ownerPassword.length < 8) return 1
-                                                        if (!/\d/.test(formData.ownerPassword) || !/[a-zA-Z]/.test(formData.ownerPassword)) return 2
-                                                        return 3
-                                                    })()
+                                        <div className="space-y-1">
+                                            <InputField
+                                                label="Kata Sandi"
+                                                name="ownerPassword"
+                                                type="password"
+                                                value={formData.ownerPassword}
+                                                onChange={handleChange}
+                                                onBlur={() => handleBlur('ownerPassword')}
+                                                placeholder="••••••••"
+                                                required
+                                                minLength={8}
+                                                error={errors.ownerPassword}
+                                                touched={touched.ownerPassword}
+                                                icon={Lock}
+                                                tooltip="Minimal 8 karakter, kombinasi huruf dan angka"
+                                            />
+                                            {formData.ownerPassword && (
+                                                <div className="ml-1">
+                                                    <div className="flex gap-1 h-1 mb-1 overflow-hidden rounded-full bg-gray-100">
+                                                        {[1, 2, 3].map((level) => {
+                                                            const strength = (() => {
+                                                                if (formData.ownerPassword.length < 8) return 1
+                                                                if (!/\d/.test(formData.ownerPassword) || !/[a-zA-Z]/.test(formData.ownerPassword)) return 2
+                                                                return 3
+                                                            })()
 
-                                                    let color = 'bg-transparent'
-                                                    if (strength >= level) {
-                                                        if (strength === 1) color = 'bg-red-500'
-                                                        if (strength === 2) color = 'bg-yellow-500'
-                                                        if (strength === 3) color = 'bg-green-500'
-                                                    }
+                                                            let color = 'bg-transparent'
+                                                            if (strength >= level) {
+                                                                if (strength === 1) color = 'bg-red-500'
+                                                                if (strength === 2) color = 'bg-yellow-500'
+                                                                if (strength === 3) color = 'bg-green-500'
+                                                            }
 
-                                                    return (
-                                                        <div key={level} className={`flex-1 transition-all duration-500 ${color}`} />
-                                                    )
-                                                })}
-                                            </div>
+                                                            return (
+                                                                <div key={level} className={`flex-1 transition-all duration-500 ${color}`} />
+                                                            )
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
-                                    )}
+                                    </div>
                                 </div>
                             </div>
 
                             {/* Business Section */}
                             <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 space-y-4 relative overflow-hidden group hover:shadow-md transition-shadow duration-300">
-                                <div className="absolute top-0 left-0 w-1 h-full bg-blue-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                <div className="absolute -inset-[1px] border-l-4 border-blue-500 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
                                 <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider flex items-center gap-2 border-b border-gray-100 pb-2">
                                     <div className="p-1 bg-blue-50 rounded-md text-blue-600">
                                         <Store className="w-3.5 h-3.5" />
@@ -538,68 +545,79 @@ const RestaurantRegisterPage: React.FC = () => {
                                     Data Restoran
                                 </h3>
                                 <div className="space-y-3">
-                                    <InputField
-                                        label="Nama Restoran"
-                                        name="businessName"
-                                        value={formData.businessName}
-                                        onChange={handleChange}
-                                        onBlur={() => handleBlur('businessName')}
-                                        placeholder="Contoh: Kopi Kenangan"
-                                        required
-                                        error={errors.businessName}
-                                        touched={touched.businessName}
-                                        icon={Store}
-                                        focusColor="blue"
-                                    />
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        <InputField
+                                            label="Nama Restoran"
+                                            name="businessName"
+                                            value={formData.businessName}
+                                            onChange={handleChange}
+                                            onBlur={() => handleBlur('businessName')}
+                                            placeholder="Contoh: Kopi Kenangan"
+                                            required
+                                            error={errors.businessName}
+                                            touched={touched.businessName}
+                                            icon={Store}
+                                            focusColor="blue"
+                                        />
 
-                                    <div className="space-y-1.5">
-                                        <label className="block text-[11px] font-bold text-gray-700 uppercase tracking-wide ml-1">
-                                            Link Website
-                                        </label>
-                                        <div className="relative flex items-center">
-                                            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                                                <LinkIcon className="w-4 h-4" />
+                                        <div className="space-y-1.5">
+                                            <div className="flex items-center gap-1.5 ml-1">
+                                                <label className="block text-[11px] font-bold text-gray-700 uppercase tracking-wide">
+                                                    Link Website
+                                                </label>
+                                                <div className="group/tooltip relative">
+                                                    <Info className="w-3 h-3 text-gray-400 cursor-help" />
+                                                    <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-48 p-2 bg-gray-900 text-white text-[10px] rounded-lg opacity-0 group-hover/tooltip:opacity-100 transition-opacity pointer-events-none z-10 shadow-xl">
+                                                        Anda dapat menggunakan domain sendiri (contoh.com) nanti
+                                                        <div className="absolute left-1/2 -translate-x-1/2 top-full border-4 border-transparent border-t-gray-900"></div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <input
-                                                type="text"
-                                                value={slug}
-                                                onChange={(e) => {
-                                                    setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))
-                                                    setIsSlugTouched(true)
-                                                }}
-                                                className={`block w-full pl-8 pr-24 py-2.5 bg-gray-50/50 hover:bg-white border-[1.5px] rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus-visible:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all duration-200 ${slugError
-                                                    ? 'border-red-300 focus:border-red-500 bg-red-50/30'
-                                                    : 'border-gray-200 focus:border-blue-500'
-                                                    }`}
-                                                placeholder="nama-restoran"
-                                                style={{ outline: '0', outlineOffset: '0', boxShadow: 'none' }}
-                                            />
-                                            <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-2">
-                                                <span className="text-gray-400 text-[10px] font-medium hidden sm:inline bg-gray-100 px-1.5 py-0.5 rounded">.careos.cloud</span>
-                                                {isCheckingSlug ? <Loader2 className="w-4 h-4 animate-spin text-blue-500" /> :
-                                                    slugAvailable === true ? <CheckCircle2 className="w-4 h-4 text-green-500" /> :
-                                                        slugAvailable === false ? <XCircle className="w-4 h-4 text-red-500" /> :
-                                                            <button
-                                                                type="button"
-                                                                onClick={() => {
-                                                                    const newSlug = generateSlugFromBusinessName(formData.businessName)
-                                                                    setSlug(newSlug)
-                                                                    setIsSlugTouched(true)
-                                                                }}
-                                                                className="p-1 hover:bg-gray-100 rounded-full text-gray-400 hover:text-gray-600 transition-colors"
-                                                                title="Regenerate URL"
-                                                            >
-                                                                <RefreshCw className="w-3.5 h-3.5" />
-                                                            </button>
-                                                }
+                                            <div className="relative flex items-center">
+                                                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                                                    <LinkIcon className="w-4 h-4" />
+                                                </div>
+                                                <input
+                                                    type="text"
+                                                    value={slug}
+                                                    onChange={(e) => {
+                                                        setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))
+                                                        setIsSlugTouched(true)
+                                                    }}
+                                                    className={`block w-full pl-8 pr-24 py-2.5 bg-gray-50/50 hover:bg-white border-[1.5px] rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:outline-none focus-visible:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all duration-200 ${slugError
+                                                        ? 'border-red-300 focus:border-red-500 bg-red-50/30'
+                                                        : 'border-gray-200 focus:border-blue-500'
+                                                        }`}
+                                                    placeholder="nama-restoran"
+                                                    style={{ outline: '0', outlineOffset: '0', boxShadow: 'none' }}
+                                                />
+                                                <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                                                    <span className="text-gray-400 text-[10px] font-medium hidden sm:inline bg-gray-100 px-1.5 py-0.5 rounded">.careos.cloud</span>
+                                                    {isCheckingSlug ? <Loader2 className="w-4 h-4 animate-spin text-blue-500" /> :
+                                                        slugAvailable === true ? <CheckCircle2 className="w-4 h-4 text-green-500" /> :
+                                                            slugAvailable === false ? <XCircle className="w-4 h-4 text-red-500" /> :
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => {
+                                                                        const newSlug = generateSlugFromBusinessName(formData.businessName)
+                                                                        setSlug(newSlug)
+                                                                        setIsSlugTouched(true)
+                                                                    }}
+                                                                    className="p-1 hover:bg-gray-100 rounded-full text-gray-400 hover:text-gray-600 transition-colors"
+                                                                    title="Regenerate URL"
+                                                                >
+                                                                    <RefreshCw className="w-3.5 h-3.5" />
+                                                                </button>
+                                                    }
+                                                </div>
                                             </div>
+                                            {slugError && (
+                                                <p className="text-[11px] text-red-500 font-medium ml-1 animate-fade-in flex items-center gap-1.5">
+                                                    <AlertCircle className="w-3.5 h-3.5" />
+                                                    {slugError}
+                                                </p>
+                                            )}
                                         </div>
-                                        {slugError && (
-                                            <p className="text-[11px] text-red-500 font-medium ml-1 animate-fade-in flex items-center gap-1.5">
-                                                <AlertCircle className="w-3.5 h-3.5" />
-                                                {slugError}
-                                            </p>
-                                        )}
                                     </div>
 
                                     <div className="space-y-2">
@@ -654,19 +672,20 @@ const RestaurantRegisterPage: React.FC = () => {
 
                             {/* Terms */}
                             <div className="pt-2">
-                                <label className="flex items-start gap-3 cursor-pointer group p-3 rounded-xl hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-100">
-                                    <div className="relative flex items-center mt-0.5">
+                                <label className="flex items-center gap-3 cursor-pointer group p-3 rounded-xl hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-100">
+                                    <div className="relative flex items-center">
                                         <input
                                             type="checkbox"
                                             name="agreeToTerms"
                                             checked={formData.agreeToTerms}
                                             onChange={handleChange}
-                                            className="peer h-5 w-5 cursor-pointer appearance-none rounded-md border-2 border-gray-300 transition-all checked:border-orange-500 checked:bg-orange-500 hover:border-orange-400"
+
+                                            className="peer h-5 w-5 cursor-pointer appearance-none rounded-full border-2 border-gray-300 transition-all checked:border-orange-500 checked:bg-orange-500 hover:border-orange-400"
                                         />
                                         <Check className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity" strokeWidth={3} />
                                     </div>
                                     <span className="text-xs text-gray-500 group-hover:text-gray-700 transition-colors leading-relaxed">
-                                        Dengan membuat akun, saya menyetujui <a href="#" className="text-orange-600 hover:underline font-bold">Syarat & Ketentuan</a> serta <a href="#" className="text-orange-600 hover:underline font-bold">Kebijakan Privasi</a> CareOS.
+                                        Dengan membuat akun, saya menyetujui <button type="button" onClick={(e) => { e.preventDefault(); setShowTerms(true); }} className="text-orange-600 hover:underline font-bold">Syarat & Ketentuan</button> serta <button type="button" onClick={(e) => { e.preventDefault(); setShowPrivacy(true); }} className="text-orange-600 hover:underline font-bold">Kebijakan Privasi</button> CareOS.
                                     </span>
                                 </label>
                             </div>
@@ -676,12 +695,12 @@ const RestaurantRegisterPage: React.FC = () => {
 
                 {/* Sticky Footer CTA */}
                 <div className="p-4 md:px-8 md:py-6 border-t border-gray-100 bg-white/90 backdrop-blur-md z-30">
-                    <div className="w-full">
+                    <div className="w-full flex justify-end">
                         <button
                             type="submit"
                             form="registration-form"
                             disabled={loading || !formData.agreeToTerms}
-                            className="w-full bg-orange-600 text-white py-4 px-6 rounded-2xl font-bold text-base hover:bg-orange-700 transition-all duration-300 shadow-xl shadow-orange-500/20 hover:shadow-2xl hover:-translate-y-1 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none flex items-center justify-center gap-2 group"
+                            className="bg-orange-600 text-white py-3.5 px-6 rounded-xl font-bold text-sm hover:bg-orange-700 transition-all duration-300 shadow-xl shadow-orange-500/20 hover:shadow-2xl hover:-translate-y-1 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none flex items-center justify-center gap-2 group"
                         >
                             {loading ? (
                                 <>
@@ -690,7 +709,7 @@ const RestaurantRegisterPage: React.FC = () => {
                                 </>
                             ) : (
                                 <>
-                                    Lanjut ke Pembayaran
+                                    Buat Website
                                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                                 </>
                             )}
@@ -806,6 +825,78 @@ const RestaurantRegisterPage: React.FC = () => {
                     </div>
                 </div>
             </div>
+            {/* Terms Modal */}
+            <Modal
+                isOpen={showTerms}
+                onClose={() => setShowTerms(false)}
+                title="Syarat & Ketentuan"
+                mobileAs="bottom-sheet"
+            >
+                <div className="space-y-4 text-sm text-gray-600 max-h-[60vh] overflow-y-auto pr-2">
+                    <p>Selamat datang di CareOS. Dengan mendaftar dan menggunakan layanan kami, Anda menyetujui syarat dan ketentuan berikut:</p>
+
+                    <h4 className="font-bold text-gray-900">1. Pendaftaran Akun</h4>
+                    <p>Anda wajib memberikan informasi yang akurat, lengkap, dan terbaru saat mendaftar. Anda bertanggung jawab penuh atas keamanan akun dan kata sandi Anda.</p>
+
+                    <h4 className="font-bold text-gray-900">2. Penggunaan Layanan</h4>
+                    <p>Layanan kami ditujukan untuk membantu operasional restoran Anda. Anda dilarang menggunakan layanan untuk tujuan ilegal atau yang melanggar hak pihak lain.</p>
+
+                    <h4 className="font-bold text-gray-900">3. Pembayaran dan Berlangganan</h4>
+                    <p>Beberapa fitur mungkin memerlukan pembayaran biaya berlangganan. Biaya ini tidak dapat dikembalikan kecuali dinyatakan lain dalam kebijakan pengembalian dana kami.</p>
+
+                    <h4 className="font-bold text-gray-900">4. Hak Kekayaan Intelektual</h4>
+                    <p>Seluruh konten, desain, dan teknologi dalam CareOS adalah milik kami atau pemberi lisensi kami. Anda diberikan lisensi terbatas untuk menggunakan layanan sesuai ketentuan.</p>
+
+                    <h4 className="font-bold text-gray-900">5. Batasan Tanggung Jawab</h4>
+                    <p>Kami tidak bertanggung jawab atas kerugian tidak langsung, insidental, atau konsekuensial yang timbul dari penggunaan layanan kami.</p>
+
+                    <h4 className="font-bold text-gray-900">6. Perubahan Syarat</h4>
+                    <p>Kami berhak mengubah syarat dan ketentuan ini sewaktu-waktu. Perubahan akan diberitahukan melalui layanan atau email.</p>
+                </div>
+                <div className="mt-6 pt-4 border-t border-gray-100 flex justify-end">
+                    <button
+                        onClick={() => setShowTerms(false)}
+                        className="bg-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-orange-700 transition-colors"
+                    >
+                        Saya Mengerti
+                    </button>
+                </div>
+            </Modal>
+
+            {/* Privacy Modal */}
+            <Modal
+                isOpen={showPrivacy}
+                onClose={() => setShowPrivacy(false)}
+                title="Kebijakan Privasi"
+                mobileAs="bottom-sheet"
+            >
+                <div className="space-y-4 text-sm text-gray-600 max-h-[60vh] overflow-y-auto pr-2">
+                    <p>Privasi Anda sangat penting bagi kami. Kebijakan ini menjelaskan bagaimana kami mengumpulkan, menggunakan, dan melindungi informasi Anda.</p>
+
+                    <h4 className="font-bold text-gray-900">1. Informasi yang Kami Kumpulkan</h4>
+                    <p>Kami mengumpulkan informasi yang Anda berikan saat mendaftar (seperti nama, email, nomor telepon) dan data operasional restoran yang Anda masukkan ke dalam sistem.</p>
+
+                    <h4 className="font-bold text-gray-900">2. Penggunaan Informasi</h4>
+                    <p>Informasi digunakan untuk menyediakan, memelihara, dan meningkatkan layanan kami, serta untuk komunikasi terkait akun dan layanan.</p>
+
+                    <h4 className="font-bold text-gray-900">3. Keamanan Data</h4>
+                    <p>Kami menerapkan langkah-langkah keamanan teknis dan organisasi yang wajar untuk melindungi data Anda dari akses yang tidak sah.</p>
+
+                    <h4 className="font-bold text-gray-900">4. Berbagi Informasi</h4>
+                    <p>Kami tidak menjual data pribadi Anda kepada pihak ketiga. Kami hanya membagikan informasi jika diwajibkan oleh hukum atau untuk penyediaan layanan (misalnya, pemrosesan pembayaran).</p>
+
+                    <h4 className="font-bold text-gray-900">5. Hak Anda</h4>
+                    <p>Anda memiliki hak untuk mengakses, memperbaiki, atau menghapus informasi pribadi Anda yang tersimpan di sistem kami.</p>
+                </div>
+                <div className="mt-6 pt-4 border-t border-gray-100 flex justify-end">
+                    <button
+                        onClick={() => setShowPrivacy(false)}
+                        className="bg-orange-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-orange-700 transition-colors"
+                    >
+                        Saya Mengerti
+                    </button>
+                </div>
+            </Modal>
         </div>
     )
 }
